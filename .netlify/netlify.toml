@@ -1,16 +1,27 @@
-plugins = []
+redirectsOrigin = "config"
 headers = []
-redirects = []
 
 [functions]
 
 [functions."*"]
 
+[[plugins]]
+origin = "default"
+package = "@netlify/plugin-nextjs"
+
+[plugins.inputs]
+
 [build]
-publish = "/Users/lunaaziz/tutorial-page"
-publishOrigin = "default"
+publish = "/Users/lunaaziz/tutorial-page/out"
+publishOrigin = "config"
+commandOrigin = "config"
+command = "npm run build"
 
 [build.environment]
+NODE_VERSION = "20"
+NEXT_PUBLIC_TINA_CLIENT_ID = ""
+TINA_TOKEN = ""
+NEXT_PUBLIC_TINA_BRANCH = "main"
 
 [build.processing]
 
@@ -23,3 +34,27 @@ publishOrigin = "default"
 [build.processing.js]
 
 [build.services]
+
+[[redirects]]
+from = "/admin/*"
+to = "/admin/index.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
