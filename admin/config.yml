@@ -1,9 +1,12 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: lunaaziz/tutorial-page
   branch: main
   
-# Disable local development for production
-# local_backend: true
+# Alternative: use git-gateway if properly configured
+# backend:
+#   name: git-gateway
+#   branch: main
 
 # Enable media uploads
 media_folder: "assets/uploads" # Media files will be stored in the repo under assets/uploads
