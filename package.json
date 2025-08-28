@@ -4,13 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
+    "build": "echo 'Building static site...' && cp -r *.html assets style.css script.js ./out/ || mkdir -p out && cp -r *.html assets style.css script.js out/",
+    "build-next": "next build && next export",
     "build-with-tina": "tinacms build && next build", 
-    "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && next build",
     "start": "next start",
     "export": "next export",
-    "lint": "biome lint",
-    "dev:build": "next build"
+    "lint": "biome lint"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
