@@ -20,6 +20,9 @@
     <!-- Performance Monitoring -->
     <script src="performance-test.js"></script>
     
+    <!-- Netlify Identity Widget -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
     <style>
       body { font-family: 'Inter', sans-serif; }
       .icon svg { display: inline; }
@@ -127,5 +130,18 @@
         </div>
     </div>
     <script src="script.js"></script>
+    
+    <!-- Netlify Identity Widget Script -->
+    <script>
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("init", user => {
+          if (!user) {
+            window.netlifyIdentity.on("login", () => {
+              document.location.href = "/admin/";
+            });
+          }
+        });
+      }
+    </script>
 </body>
 </html> 
