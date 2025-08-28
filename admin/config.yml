@@ -1,9 +1,9 @@
 backend:
   name: git-gateway
-  branch: main # Branch to update (optional; defaults to master)
-
-# Enable local development
-local_backend: true
+  branch: main
+  
+# Disable local development for production
+# local_backend: true
 
 # Enable media uploads
 media_folder: "assets/uploads" # Media files will be stored in the repo under assets/uploads
