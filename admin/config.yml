@@ -2,11 +2,11 @@ backend:
   name: github
   repo: lunaaziz/tutorial-page
   branch: main
-  
-# Alternative: use git-gateway if properly configured
-# backend:
-#   name: git-gateway
-#   branch: main
+  # For testing, you can use open_authoring
+  open_authoring: true
+
+# Enable editorial workflow for content review
+publish_mode: editorial_workflow
 
 # Enable media uploads
 media_folder: "assets/uploads" # Media files will be stored in the repo under assets/uploads
