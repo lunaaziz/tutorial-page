@@ -1,0 +1,290 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #fff;
+    color: #33475B;
+    margin: 0;
+    font-size: 18px;
+    line-height: 30px;
+}
+
+.container {
+    max-width: 1536px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+header {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    max-width: 1536px;
+    margin: 0 auto;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.logo-img {
+    height: 24px;
+}
+
+.icon, .size-6 {
+    width: 1.25em;
+    height: 1.25em;
+    vertical-align: middle;
+}
+
+.logo i {
+    color: #8b5cf6;
+    font-size: 1.5rem;
+}
+
+.logo h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.back-btn {
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    color: #33475B;
+}
+
+.search-bar {
+    position: relative;
+}
+
+.search-bar input {
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.5rem 2.5rem 0.5rem 2rem;
+    width: 200px;
+}
+
+.search-bar i {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+}
+
+.search-bar .shortcut {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #e5e7eb;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    color: #4b5563;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar nav li a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    color: #33475B;
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.sidebar nav li.active a {
+    background-color: #ede9fe;
+    color: #6d28d9;
+}
+
+.sidebar nav li a:hover {
+    background-color: #f3f4f6;
+}
+
+.sidebar .menu-section {
+    margin-top: 1.5rem;
+}
+
+.sidebar .menu-section p {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    color: #6b7280;
+    padding: 0 1rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+main {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-banner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 200px;
+    background: linear-gradient(135deg, #fce7f3, #e9d5ff, #d1fae5);
+    filter: blur(80px);
+    z-index: 0;
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+}
+
+.page-subtitle {
+    text-transform: uppercase;
+    color: #6610F2;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.welcome-header i {
+    font-size: 2rem;
+    color: #8b5cf6;
+}
+
+.welcome-header h2 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+main .content > p {
+    color: #33475B;
+    line-height: 1.6;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.card h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.card p {
+    margin: 0;
+    color: #6b7280;
+}
+
+.last-updated {
+    margin-top: 3rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Icon sizing for all SVG icons */
+.icon svg {
+  width: 1em;
+  height: 1em;
+}
+
+.icon-home {
+  color: #B2C6D5;
+}
+
+.icon-home svg {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+/* Stepper text style */
+.stepper-text, .stepper-text h4 {
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.font-small {
+  font-size: 13px;
+}
+
+.stepper-text li > p {
+  margin-left: 2.5rem;
+}
+
+.stepper-text li > span {
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 1.25rem;
+} 

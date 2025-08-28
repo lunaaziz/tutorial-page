@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Test Page</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script src="analytics.js"></script>
+    
+    <!-- Hotjar -->
+    <script src="hotjar.js"></script>
+    
+    <!-- Performance Monitoring -->
+    <script src="performance-test.js"></script>
+    
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Tracking Scripts Test Page</h1>
+    
+    <div class="test-section">
+        <h2>📊 Google Analytics Test</h2>
+        <p>Check browser console and Network tab for Google Analytics requests.</p>
+        <button class="btn" onclick="testGA()">Test GA Event</button>
+        <div id="ga-status" class="status info">Click the button to test Google Analytics tracking...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔥 Hotjar Test</h2>
+        <p>Check browser console for Hotjar initialization messages.</p>
+        <button class="btn" onclick="testHotjar()">Test Hotjar Event</button>
+        <div id="hj-status" class="status info">Click the button to test Hotjar tracking...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>⚡ Performance Test</h2>
+        <p>Performance metrics should appear in the console automatically.</p>
+        <button class="btn" onclick="checkPerformance()">Check Performance</button>
+        <div id="perf-status" class="status info">Performance monitoring is active...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎯 User Interaction Test</h2>
+        <p>These interactions should be tracked by all scripts.</p>
+        <button class="btn" onclick="alert('Button clicked!')">Click Me</button>
+        <button class="btn" onclick="document.getElementById('test-form').submit()">Submit Form</button>
+        <form id="test-form" onsubmit="event.preventDefault(); alert('Form submitted!');">
+            <input type="text" placeholder="Test input" style="padding: 8px; margin: 5px;">
+        </form>
+    </div>
+    
+    <div class="test-section">
+        <h2>📈 Test Results</h2>
+        <div id="results">
+            <p><strong>To verify tracking is working:</strong></p>
+            <ol>
+                <li>Open browser Developer Tools (F12)</li>
+                <li>Go to Console tab</li>
+                <li>Look for performance metrics and tracking messages</li>
+                <li>Go to Network tab and look for analytics requests</li>
+                <li>Check your Google Analytics and Hotjar dashboards</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Test Google Analytics
+        function testGA() {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'test_button_click', {
+                    event_category: 'testing',
+                    event_label: 'GA Test Button',
+                    value: 1
+                });
+                document.getElementById('ga-status').innerHTML = '✅ Google Analytics event sent! Check console and GA dashboard.';
+                document.getElementById('ga-status').className = 'status success';
+            } else {
+                document.getElementById('ga-status').innerHTML = '❌ Google Analytics not loaded. Check script configuration.';
+                document.getElementById('ga-status').className = 'status error';
+            }
+        }
+        
+        // Test Hotjar
+        function testHotjar() {
+            if (typeof hj !== 'undefined') {
+                hj('event', 'test_button_click', {
+                    button_name: 'Hotjar Test Button',
+                    page_name: 'Tracking Test Page'
+                });
+                document.getElementById('hj-status').innerHTML = '✅ Hotjar event sent! Check console and Hotjar dashboard.';
+                document.getElementById('hj-status').className = 'status success';
+            } else {
+                document.getElementById('hj-status').innerHTML = '❌ Hotjar not loaded. Check script configuration.';
+                document.getElementById('hj-status').className = 'status error';
+            }
+        }
+        
+        // Check Performance
+        function checkPerformance() {
+            const perfStatus = document.getElementById('perf-status');
+            if (window.performance && window.performance.getEntriesByType) {
+                const navigation = performance.getEntriesByType('navigation')[0];
+                const loadTime = navigation.loadEventEnd - navigation.fetchStart;
+                perfStatus.innerHTML = `✅ Performance monitoring active. Page load time: ${Math.round(loadTime)}ms`;
+                perfStatus.className = 'status success';
+            } else {
+                perfStatus.innerHTML = '❌ Performance API not available';
+                perfStatus.className = 'status error';
+            }
+        }
+        
+        // Auto-check on page load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                checkPerformance();
+                console.log('🔍 Tracking Test Page loaded successfully');
+                console.log('📊 Check the following:');
+                console.log('   - Google Analytics requests in Network tab');
+                console.log('   - Hotjar initialization in Console');
+                console.log('   - Performance metrics in Console');
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 
