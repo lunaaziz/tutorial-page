@@ -1,30 +1,430 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial Content Manager</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom CMS - Keyword Tool Tutorials</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/marked/marked.min.js"></script>
 </head>
-<body>
-  <!-- Include the script that builds the page and powers Netlify CMS -->
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  
-  <!-- Initialize CMS -->
-  <script>
-    // Use GitHub OAuth for authentication
-    window.CMS_MANUAL_INIT = true;
-    
-    window.addEventListener('DOMContentLoaded', function() {
-      window.CMS.init({
-        config: {
-          backend: {
-            name: 'github',
-            repo: 'lunaaziz/tutorial-page',
-            branch: 'main'
-          }
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="text-xl font-bold text-gray-900">
+                        🎯 Custom CMS
+                    </a>
+                    <span class="ml-2 text-sm text-gray-500">Keyword Tool Tutorials</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="../index.html" class="text-gray-700 hover:text-gray-900">← Back to Site</a>
+                    <button id="saveBtn" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                        💾 Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Sidebar - Content Management -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-4">📝 Content Management</h2>
+                    
+                    <!-- Tutorial List -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium mb-3">Tutorials</h3>
+                        <div id="tutorialList" class="space-y-2">
+                            <!-- Tutorials will be loaded here -->
+                        </div>
+                        <button id="addTutorialBtn" class="w-full mt-3 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+                            ➕ Add New Tutorial
+                        </button>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="border-t pt-4">
+                        <h3 class="text-lg font-medium mb-3">⚡ Quick Actions</h3>
+                        <div class="space-y-2">
+                            <button id="exportBtn" class="w-full bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
+                                📤 Export Content
+                            </button>
+                            <button id="importBtn" class="w-full bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700">
+                                📥 Import Content
+                            </button>
+                            <button id="previewBtn" class="w-full bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700">
+                                👁️ Preview Site
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area - Editor -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-md">
+                    <!-- Editor Tabs -->
+                    <div class="border-b">
+                        <nav class="flex space-x-8 px-6">
+                            <button class="tab-btn active py-4 px-1 border-b-2 border-blue-500 text-blue-600 font-medium" data-tab="editor">
+                                ✏️ Editor
+                            </button>
+                            <button class="tab-btn py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium" data-tab="preview">
+                                👁️ Preview
+                            </button>
+                            <button class="tab-btn py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium" data-tab="settings">
+                                ⚙️ Settings
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Editor Tab -->
+                    <div id="editor" class="tab-content active p-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                                <input type="text" id="tutorialTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <textarea id="tutorialDescription" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                    <select id="tutorialCategory" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="Basics">Basics</option>
+                                        <option value="Find Keywords">Find Keywords</option>
+                                        <option value="Check Search Volume">Check Search Volume</option>
+                                        <option value="Keyword Basket">Keyword Basket</option>
+                                        <option value="My Account">My Account</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
+                                    <select id="tutorialDifficulty" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Content (Markdown)</label>
+                                <textarea id="tutorialContent" rows="15" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm" placeholder="# Your Tutorial Title
+
+## Introduction
+
+Write your tutorial content here using Markdown...
+
+- Point 1
+- Point 2
+- Point 3
+
+## Conclusion
+
+End your tutorial here..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview Tab -->
+                    <div id="preview" class="tab-content hidden p-6">
+                        <div class="prose max-w-none">
+                            <div id="previewContent" class="bg-gray-50 p-4 rounded-md min-h-[400px]">
+                                <p class="text-gray-500 text-center">Preview will appear here...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div id="settings" class="tab-content hidden p-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tutorial Slug</label>
+                                <input type="text" id="tutorialSlug" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="keyword-research-basics">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tags (comma separated)</label>
+                                <input type="text" id="tutorialTags" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="keyword-research, seo, basics">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                                <input type="text" id="tutorialDuration" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="10 minutes">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Featured Image URL</label>
+                                <input type="url" id="tutorialImage" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://example.com/image.jpg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Tutorial Modal -->
+    <div id="addTutorialModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                <div class="px-6 py-4 border-b">
+                    <h3 class="text-lg font-medium">Add New Tutorial</h3>
+                </div>
+                <div class="px-6 py-4">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tutorial Slug</label>
+                        <input type="text" id="newTutorialSlug" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="my-new-tutorial">
+                    </div>
+                </div>
+                <div class="px-6 py-4 border-t flex justify-end space-x-3">
+                    <button id="cancelAddBtn" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+                    <button id="confirmAddBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Create Tutorial</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Custom CMS JavaScript
+        class CustomCMS {
+            constructor() {
+                this.currentTutorial = null;
+                this.tutorials = this.loadTutorials();
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.renderTutorialList();
+                this.loadSampleTutorial();
+            }
+
+            setupEventListeners() {
+                // Tab switching
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
+                });
+
+                // Content editing
+                document.getElementById('tutorialContent').addEventListener('input', () => this.updatePreview());
+                
+                // Save button
+                document.getElementById('saveBtn').addEventListener('click', () => this.saveTutorial());
+                
+                // Add tutorial
+                document.getElementById('addTutorialBtn').addEventListener('click', () => this.showAddModal());
+                document.getElementById('confirmAddBtn').addEventListener('click', () => this.createTutorial());
+                document.getElementById('cancelAddBtn').addEventListener('click', () => this.hideAddModal());
+                
+                // Quick actions
+                document.getElementById('exportBtn').addEventListener('click', () => this.exportContent());
+                document.getElementById('importBtn').addEventListener('click', () => this.importContent());
+                document.getElementById('previewBtn').addEventListener('click', () => this.previewSite());
+            }
+
+            switchTab(tabName) {
+                // Hide all tabs
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active', 'border-blue-500', 'text-blue-600');
+                    btn.classList.add('border-transparent', 'text-gray-500');
+                });
+
+                // Show selected tab
+                document.getElementById(tabName).classList.remove('hidden');
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active', 'border-blue-500', 'text-blue-600');
+            }
+
+            loadTutorials() {
+                // In a real implementation, this would load from localStorage or API
+                return [
+                    {
+                        slug: 'keyword-research-basics',
+                        title: 'Keyword Research Basics',
+                        description: 'Learn the fundamentals of keyword research to improve your SEO strategy',
+                        category: 'Basics',
+                        difficulty: 'Beginner',
+                        content: '# Keyword Research Basics\n\nLearn the fundamentals...',
+                        tags: ['keyword-research', 'seo', 'basics'],
+                        duration: '10 minutes'
+                    }
+                ];
+            }
+
+            renderTutorialList() {
+                const list = document.getElementById('tutorialList');
+                list.innerHTML = this.tutorials.map(tutorial => `
+                    <div class="tutorial-item p-3 border rounded-md cursor-pointer hover:bg-gray-50 ${this.currentTutorial?.slug === tutorial.slug ? 'bg-blue-50 border-blue-200' : ''}" 
+                         data-slug="${tutorial.slug}">
+                        <h4 class="font-medium text-sm">${tutorial.title}</h4>
+                        <p class="text-xs text-gray-500">${tutorial.category} • ${tutorial.difficulty}</p>
+                    </div>
+                `).join('');
+
+                // Add click listeners
+                list.querySelectorAll('.tutorial-item').forEach(item => {
+                    item.addEventListener('click', () => this.loadTutorial(item.dataset.slug));
+                });
+            }
+
+            loadTutorial(slug) {
+                const tutorial = this.tutorials.find(t => t.slug === slug);
+                if (!tutorial) return;
+
+                this.currentTutorial = tutorial;
+                this.populateForm(tutorial);
+                this.renderTutorialList();
+            }
+
+            populateForm(tutorial) {
+                document.getElementById('tutorialTitle').value = tutorial.title || '';
+                document.getElementById('tutorialDescription').value = tutorial.description || '';
+                document.getElementById('tutorialCategory').value = tutorial.category || 'Basics';
+                document.getElementById('tutorialDifficulty').value = tutorial.difficulty || 'Beginner';
+                document.getElementById('tutorialContent').value = tutorial.content || '';
+                document.getElementById('tutorialSlug').value = tutorial.slug || '';
+                document.getElementById('tutorialTags').value = tutorial.tags?.join(', ') || '';
+                document.getElementById('tutorialDuration').value = tutorial.duration || '';
+                document.getElementById('tutorialImage').value = tutorial.image || '';
+
+                this.updatePreview();
+            }
+
+            updatePreview() {
+                const content = document.getElementById('tutorialContent').value;
+                const preview = document.getElementById('previewContent');
+                if (content) {
+                    preview.innerHTML = marked.parse(content);
+                } else {
+                    preview.innerHTML = '<p class="text-gray-500 text-center">Preview will appear here...</p>';
+                }
+            }
+
+            saveTutorial() {
+                if (!this.currentTutorial) {
+                    alert('Please select a tutorial to edit first');
+                    return;
+                }
+
+                // Update tutorial data
+                this.currentTutorial.title = document.getElementById('tutorialTitle').value;
+                this.currentTutorial.description = document.getElementById('tutorialDescription').value;
+                this.currentTutorial.category = document.getElementById('tutorialCategory').value;
+                this.currentTutorial.difficulty = document.getElementById('tutorialDifficulty').value;
+                this.currentTutorial.content = document.getElementById('tutorialContent').value;
+                this.currentTutorial.slug = document.getElementById('tutorialSlug').value;
+                this.currentTutorial.tags = document.getElementById('tutorialTags').value.split(',').map(t => t.trim()).filter(t => t);
+                this.currentTutorial.duration = document.getElementById('tutorialDuration').value;
+                this.currentTutorial.image = document.getElementById('tutorialImage').value;
+
+                // Save to localStorage (in real implementation, save to server)
+                localStorage.setItem('customCMS_tutorials', JSON.stringify(this.tutorials));
+                
+                alert('Tutorial saved successfully!');
+            }
+
+            showAddModal() {
+                document.getElementById('addTutorialModal').classList.remove('hidden');
+            }
+
+            hideAddModal() {
+                document.getElementById('addTutorialModal').classList.add('hidden');
+                document.getElementById('newTutorialSlug').value = '';
+            }
+
+            createTutorial() {
+                const slug = document.getElementById('newTutorialSlug').value.trim();
+                if (!slug) {
+                    alert('Please enter a tutorial slug');
+                    return;
+                }
+
+                if (this.tutorials.find(t => t.slug === slug)) {
+                    alert('A tutorial with this slug already exists');
+                    return;
+                }
+
+                const newTutorial = {
+                    slug,
+                    title: 'New Tutorial',
+                    description: 'Enter description here',
+                    category: 'Basics',
+                    difficulty: 'Beginner',
+                    content: '# New Tutorial\n\nStart writing your tutorial here...',
+                    tags: ['new'],
+                    duration: '5 minutes'
+                };
+
+                this.tutorials.push(newTutorial);
+                this.hideAddModal();
+                this.renderTutorialList();
+                this.loadTutorial(slug);
+                
+                // Save to localStorage
+                localStorage.setItem('customCMS_tutorials', JSON.stringify(this.tutorials));
+            }
+
+            exportContent() {
+                const dataStr = JSON.stringify(this.tutorials, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'tutorials-export.json';
+                link.click();
+                URL.revokeObjectURL(url);
+            }
+
+            importContent() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const imported = JSON.parse(e.target.result);
+                            this.tutorials = imported;
+                            this.renderTutorialList();
+                            localStorage.setItem('customCMS_tutorials', JSON.stringify(this.tutorials));
+                            alert('Content imported successfully!');
+                        } catch (error) {
+                            alert('Error importing content: ' + error.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+                input.click();
+            }
+
+            previewSite() {
+                window.open('../index.html', '_blank');
+            }
+
+            loadSampleTutorial() {
+                if (this.tutorials.length > 0) {
+                    this.loadTutorial(this.tutorials[0].slug);
+                }
+            }
         }
-      });
-    });
-  </script>
+
+        // Initialize CMS when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new CustomCMS();
+        });
+    </script>
 </body>
 </html>
