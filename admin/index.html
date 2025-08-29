@@ -59,6 +59,22 @@
             align-items: center;
             justify-content: center;
         }
+        .edit-menu-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            opacity: 0.6;
+        }
+        .edit-menu-btn:hover {
+            background-color: #f3f4f6;
+            opacity: 1;
+        }
+        .menu-text {
+            flex: 1;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -90,6 +106,10 @@
                         <span>📄</span>
                         Add New Page
                     </button>
+                    <button id="manageCategoriesBtn" class="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 flex items-center gap-2">
+                        <span>📁</span>
+                        Manage Categories
+                    </button>
                     <button id="exitEditBtn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 flex items-center gap-2">
                         <span>❌</span>
                         Exit Edit
@@ -118,16 +138,22 @@
                     <!-- Welcome & Tutorials -->
                     <ul>
                         <li class="mb-2">
-                            <a href="#" class="sidebar-menu-item active">
+                            <div class="sidebar-menu-item active">
                                 <span class="icon">🏠</span> 
-                                <span class="editable" data-field="welcome-text">Welcome</span>
-                            </a>
+                                <span class="menu-text">Welcome</span>
+                                <button class="edit-menu-btn ml-auto" onclick="editSidebarItem(this, 'welcome-text', 'index.html')">
+                                    <span class="icon">✏️</span>
+                                </button>
+                            </div>
                         </li>
                         <li>
-                            <a href="#" class="sidebar-menu-item">
+                            <div class="sidebar-menu-item">
                                 <span class="icon">📚</span> 
-                                <span class="editable" data-field="tutorials-text">Tutorials</span>
-                            </a>
+                                <span class="menu-text">Tutorials</span>
+                                <button class="edit-menu-btn ml-auto" onclick="editSidebarItem(this, 'tutorials-text', 'tutorials.html')">
+                                    <span class="icon">✏️</span>
+                                </button>
+                            </div>
                         </li>
                     </ul>
                     
@@ -135,26 +161,51 @@
                     <div class="sidebar-section">
                         <p class="sidebar-section-header editable" data-field="basics-category">BASICS</p>
                         <ul id="basics-menu">
-                            <li><a href="#" class="sidebar-menu-item">
-                                <span class="icon">🔍</span> 
-                                <span class="editable" data-field="search-bar">Search Bar</span>
-                            </a></li>
-                            <li><a href="#" class="sidebar-menu-item">
-                                <span class="icon">🌐</span> 
-                                <span class="editable" data-field="search-engines">Search Engines</span>
-                            </a></li>
-                            <li><a href="#" class="sidebar-menu-item">
-                                <span class="icon">📊</span> 
-                                <span class="editable" data-field="understanding-data">Understanding Data</span>
-                            </a></li>
-                            <li><a href="#" class="sidebar-menu-item">
-                                <span class="icon">⚙️</span> 
-                                <span class="editable" data-field="data-settings">Data Settings</span>
-                            </a></li>
-                            <li><a href="#" class="sidebar-menu-item">
-                                <span class="icon">📋</span> 
-                                <span class="editable" data-field="customise-table">Customise Table View</span>
-                            </a></li>
+                            <li>
+                                <div class="sidebar-menu-item">
+                                    <span class="icon">🔍</span> 
+                                    <span class="menu-text">Search Bar</span>
+                                    <button class="edit-menu-btn ml-auto" onclick="editSidebarItem(this, 'search-bar', '#')">
+                                        <span class="icon">✏️</span>
+                                    </button>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="sidebar-menu-item">
+                                    <span class="icon">🌐</span> 
+                                    <span class="menu-text">Search Engines</span>
+                                    <button class="edit-menu-btn ml-auto" onclick="editSidebarItem(this, 'search-engines', '#')">
+                                        <span class="icon">✏️</span>
+                                    </button>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="sidebar-menu-item">
+                                    <span class="icon">📊</span> 
+                                    <span class="menu-text">Understanding Data</span>
+                                    <button class="edit-menu-btn ml-auto" onclick="editSidebarItem(this, 'understanding-data', '#')">
+                                        <span class="icon">✏️</span>
+                                    </button>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="sidebar-menu-item">
+                                    <span class="icon">⚙️</span> 
+                                    <span class="menu-text">Data Settings</span>
+                                    <button class="edit-menu-btn ml-auto" onclick="editSidebarItem(this, 'data-settings', '#')">
+                                        <span class="icon">✏️</span>
+                                    </button>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="sidebar-menu-item">
+                                    <span class="icon">📋</span> 
+                                    <span class="menu-text">Customise Table View</span>
+                                    <button class="edit-menu-btn ml-auto" onclick="editSidebarItem(this, 'customise-table', '#')">
+                                        <span class="icon">✏️</span>
+                                    </button>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     
@@ -309,12 +360,12 @@
                 </div>
                 <div class="px-6 py-4">
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Menu Title</label>
-                        <input type="text" id="newMenuTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="New Menu Item">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Menu Item Name</label>
+                        <input type="text" id="newMenuTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter the name of this menu item">
                     </div>
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Link URL</label>
-                        <input type="text" id="newMenuLink" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="page.html">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">URL Link</label>
+                        <input type="text" id="newMenuLink" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter the URL (e.g., page.html or https://example.com)">
                     </div>
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
@@ -362,6 +413,7 @@
                 document.getElementById('saveAllBtn').addEventListener('click', () => this.saveAll());
                 document.getElementById('addNewPageBtn').addEventListener('click', () => this.showAddNewPageModal());
                 document.getElementById('addSidebarItemBtn').addEventListener('click', () => this.showAddSidebarItemModal());
+                document.getElementById('manageCategoriesBtn').addEventListener('click', () => this.showCategoryManagementModal());
                 document.getElementById('previewSiteBtn').addEventListener('click', () => this.previewSite());
                 document.getElementById('exportContentBtn').addEventListener('click', () => this.exportContent());
                 document.getElementById('exitEditBtn').addEventListener('click', () => this.exitEditMode());
@@ -372,6 +424,10 @@
                 document.getElementById('confirmNewPageBtn').addEventListener('click', () => this.createNewPage());
                 document.getElementById('cancelAddSidebarBtn').addEventListener('click', () => this.hideAddSidebarItemModal());
                 document.getElementById('confirmAddSidebarBtn').addEventListener('click', () => this.createSidebarItem());
+                
+                // Category management modal
+                document.getElementById('closeCategoryModalBtn').addEventListener('click', () => this.hideCategoryManagementModal());
+                document.getElementById('addCategoryBtn').addEventListener('click', () => this.addNewCategory());
             }
 
             startEditing(element) {
@@ -496,6 +552,87 @@
                 this.hideAddSidebarItemModal();
                 
                 alert(`Menu item "${title}" added to ${category} category!`);
+            }
+
+            // Category Management Methods
+            showCategoryManagementModal() {
+                document.getElementById('categoryManagementModal').classList.remove('hidden');
+                this.populateCategoriesList();
+            }
+
+            hideCategoryManagementModal() {
+                document.getElementById('categoryManagementModal').classList.add('hidden');
+                document.getElementById('newCategoryName').value = '';
+                document.getElementById('newCategoryOrder').value = '1';
+            }
+
+            populateCategoriesList() {
+                const categoriesList = document.getElementById('categoriesList');
+                const categories = this.getSidebarCategories();
+                
+                categoriesList.innerHTML = categories.map((category, index) => `
+                    <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-medium text-gray-500">${index + 1}.</span>
+                            <span class="font-medium">${category.name}</span>
+                            <span class="text-sm text-gray-500">(${category.itemCount} items)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="editCategory('${category.name}')" class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">Edit</button>
+                            <button onclick="deleteCategory('${category.name}')" class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            getSidebarCategories() {
+                const categories = [
+                    { name: 'Welcome & Tutorials', itemCount: 2 },
+                    { name: 'BASICS', itemCount: 5 },
+                    { name: 'FIND KEYWORDS', itemCount: 1 },
+                    { name: 'CHECK SEARCH VOLUME', itemCount: 1 },
+                    { name: 'KEYWORD BASKET', itemCount: 1 },
+                    { name: 'MY ACCOUNT', itemCount: 6 }
+                ];
+                return categories;
+            }
+
+            addNewCategory() {
+                const name = document.getElementById('newCategoryName').value.trim();
+                const order = parseInt(document.getElementById('newCategoryOrder').value) || 1;
+
+                if (!name) {
+                    alert('Please enter a category name');
+                    return;
+                }
+
+                // Add new category to sidebar
+                const sidebar = document.querySelector('nav');
+                const newCategorySection = document.createElement('div');
+                newCategorySection.className = 'sidebar-section';
+                newCategorySection.innerHTML = `
+                    <p class="sidebar-section-header editable" data-field="${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-category">${name}</p>
+                    <ul>
+                        <!-- New items will be added here -->
+                    </ul>
+                `;
+
+                // Insert at the specified order
+                const existingSections = sidebar.querySelectorAll('.sidebar-section');
+                if (order <= existingSections.length) {
+                    sidebar.insertBefore(newCategorySection, existingSections[order - 1]);
+                } else {
+                    sidebar.appendChild(newCategorySection);
+                }
+
+                // Save to localStorage
+                const categoriesData = JSON.parse(localStorage.getItem('sidebarCategories') || '[]');
+                categoriesData.push({ name, order });
+                localStorage.setItem('sidebarCategories', JSON.stringify(categoriesData));
+
+                this.hideCategoryManagementModal();
+                this.populateCategoriesList();
+                alert('Category added successfully!');
             }
 
             saveAll() {
@@ -761,6 +898,45 @@
             </main>
         </div>
     </div>
+
+    <!-- Category Management Modal -->
+    <div id="categoryManagementModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[80vh] overflow-hidden">
+                <div class="px-6 py-4 border-b">
+                    <h3 class="text-lg font-medium">Manage Sidebar Categories</h3>
+                </div>
+                <div class="px-6 py-4 overflow-y-auto max-h-[60vh]">
+                    <!-- Add New Category Form -->
+                    <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                        <h4 class="text-md font-medium mb-3">Add New Category</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Category Name</label>
+                                <input type="text" id="newCategoryName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., ADVANCED FEATURES">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Display Order</label>
+                                <input type="number" id="newCategoryOrder" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="1" min="1" value="1">
+                            </div>
+                        </div>
+                        <button id="addCategoryBtn" class="mt-3 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Add Category</button>
+                    </div>
+
+                    <!-- Existing Categories List -->
+                    <div>
+                        <h4 class="text-md font-medium mb-3">Existing Categories</h4>
+                        <div id="categoriesList" class="space-y-3">
+                            <!-- Categories will be populated here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-4 border-t flex justify-end">
+                    <button id="closeCategoryModalBtn" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>`;
             }
@@ -876,6 +1052,70 @@
         document.addEventListener('DOMContentLoaded', () => {
             new VisualEditor();
         });
+
+        // Global function for editing sidebar items
+        function editSidebarItem(button, fieldName, currentUrl) {
+            const menuItem = button.closest('.sidebar-menu-item');
+            const menuText = menuItem.querySelector('.menu-text');
+            const currentName = menuText.textContent;
+            
+            const newName = prompt('Enter new name for this menu item:', currentName);
+            if (newName && newName.trim()) {
+                const newUrl = prompt('Enter new URL for this menu item:', currentUrl);
+                if (newUrl) {
+                    menuText.textContent = newName.trim();
+                    // Store the updated data
+                    const updateData = {
+                        field: fieldName,
+                        value: newName.trim(),
+                        url: newUrl
+                    };
+                    localStorage.setItem(`sidebar_${fieldName}`, JSON.stringify(updateData));
+                    alert('Menu item updated successfully!');
+                }
+            }
+        }
+
+        // Global functions for category management
+        function editCategory(categoryName) {
+            const newName = prompt('Enter new name for this category:', categoryName);
+            if (newName && newName.trim() && newName !== categoryName) {
+                // Find and update the category header
+                const categoryHeader = document.querySelector(`[data-field="${categoryName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-category"]`);
+                if (categoryHeader) {
+                    categoryHeader.textContent = newName.trim();
+                    categoryHeader.dataset.field = newName.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-category';
+                    
+                    // Update localStorage
+                    const categoriesData = JSON.parse(localStorage.getItem('sidebarCategories') || '[]');
+                    const categoryIndex = categoriesData.findIndex(cat => cat.name === categoryName);
+                    if (categoryIndex !== -1) {
+                        categoriesData[categoryIndex].name = newName.trim();
+                        localStorage.setItem('sidebarCategories', JSON.stringify(categoriesData));
+                    }
+                    
+                    alert('Category updated successfully!');
+                }
+            }
+        }
+
+        function deleteCategory(categoryName) {
+            if (confirm(`Are you sure you want to delete the category "${categoryName}"? This will also remove all menu items in this category.`)) {
+                // Find and remove the category section
+                const categoryHeader = document.querySelector(`[data-field="${categoryName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-category"]`);
+                if (categoryHeader) {
+                    const categorySection = categoryHeader.closest('.sidebar-section');
+                    categorySection.remove();
+                    
+                    // Update localStorage
+                    const categoriesData = JSON.parse(localStorage.getItem('sidebarCategories') || '[]');
+                    const filteredCategories = categoriesData.filter(cat => cat.name !== categoryName);
+                    localStorage.setItem('sidebarCategories', JSON.stringify(filteredCategories));
+                    
+                    alert('Category deleted successfully!');
+                }
+            }
+        }
     </script>
     <script src="dynamic-updater.js"></script>
 </body>
