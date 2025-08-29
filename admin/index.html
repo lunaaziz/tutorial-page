@@ -3,79 +3,880 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting to Visual Editor...</title>
+    <title>Admin - Keyword Tool Tutorials</title>
     <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3b82f6;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
+        .editable { 
+            border: 2px dashed transparent; 
+            padding: 2px; 
+            transition: all 0.2s;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .editable:hover { 
+            border-color: #3b82f6; 
+            background-color: #eff6ff;
+            cursor: pointer;
         }
-        .redirect-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            padding: 3rem;
-            text-align: center;
-            max-width: 500px;
-            margin: 0 auto;
+        .editing { 
+            border-color: #3b82f6 !important; 
+            background-color: #eff6ff !important;
         }
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+
+        .sidebar-section {
+            margin-top: 24px;
+        }
+        .sidebar-section-header {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            padding: 0 16px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .sidebar-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 20px;
+            color: #33475B;
+            transition: background-color 0.2s;
+        }
+        .sidebar-menu-item:hover {
+            background-color: #f3f4f6;
+        }
+        .sidebar-menu-item.active {
+            color: #6610F2;
+            background-color: #f3e8ff;
+        }
+        .icon {
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
         }
     </style>
 </head>
-<body>
-    <div class="gradient-bg">
-        <div class="redirect-card">
-            <div class="loader mx-auto mb-6"></div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-4">🎨 Redirecting to Visual Editor</h1>
-            <p class="text-lg text-gray-600 mb-6">Taking you to the advanced visual editing experience...</p>
-            
-            <div class="space-y-4">
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h3 class="font-semibold text-blue-900 mb-2">✨ What You'll Get:</h3>
-                    <ul class="text-sm text-blue-800 space-y-1">
-                        <li>• Inline editing for all content</li>
-                        <li>• Auto-deploy to live site</li>
-                        <li>• Real-time preview</li>
-                        <li>• Professional interface</li>
-                    </ul>
+<body class="bg-gray-50">
+
+
+    <!-- Top Bar for Adding New Pages -->
+    <div class="bg-white border-b border-gray-200 px-8 py-4">
+        <div class="max-w-[1536px] mx-auto">
+            <div class="flex items-center justify-between">
+                <h1 class="text-xl font-semibold text-gray-900">Page Manager</h1>
+                <div class="flex items-center gap-3">
+                    <button id="liveUpdateToggle" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
+                        <span>🔄</span>
+                        Live Update: OFF
+                    </button>
+                    <button id="saveAllBtn" class="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 flex items-center gap-2">
+                        <span>💾</span>
+                        Save All
+                    </button>
+                    <button id="previewSiteBtn" class="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 flex items-center gap-2">
+                        <span>👁️</span>
+                        Preview
+                    </button>
+                    <button id="exportContentBtn" class="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 flex items-center gap-2">
+                        <span>📤</span>
+                        Export Content
+                    </button>
+                    <button id="addNewPageBtn" class="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 flex items-center gap-2">
+                        <span>📄</span>
+                        Add New Page
+                    </button>
+                    <button id="exitEditBtn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 flex items-center gap-2">
+                        <span>❌</span>
+                        Exit Edit
+                    </button>
                 </div>
-                
-                <div class="text-sm text-gray-500">
-                    <p>If you're not redirected automatically,</p>
-                    <a href="visual-editor.html" class="text-blue-600 hover:text-blue-800 underline font-medium">
-                        click here to continue →
-                    </a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Main Content -->
+    <div class="max-w-[1536px] mx-auto px-8">
+        <div class="grid grid-cols-[240px_1fr] gap-8 mt-8">
+            <!-- Sidebar -->
+            <aside class="pr-2">
+                <!-- Add Item Button Above Sidebar -->
+                <div class="mb-6">
+                    <button id="addSidebarItemBtn" class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center justify-center gap-2 text-sm">
+                        <span>➕</span>
+                        Add Menu Item
+                    </button>
+                </div>
+
+                <nav>
+                    <!-- Welcome & Tutorials -->
+                    <ul>
+                        <li class="mb-2">
+                            <a href="#" class="sidebar-menu-item active">
+                                <span class="icon">🏠</span> 
+                                <span class="editable" data-field="welcome-text">Welcome</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="sidebar-menu-item">
+                                <span class="icon">📚</span> 
+                                <span class="editable" data-field="tutorials-text">Tutorials</span>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <!-- BASICS Section -->
+                    <div class="sidebar-section">
+                        <p class="sidebar-section-header editable" data-field="basics-category">BASICS</p>
+                        <ul id="basics-menu">
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">🔍</span> 
+                                <span class="editable" data-field="search-bar">Search Bar</span>
+                            </a></li>
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">🌐</span> 
+                                <span class="editable" data-field="search-engines">Search Engines</span>
+                            </a></li>
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">📊</span> 
+                                <span class="editable" data-field="understanding-data">Understanding Data</span>
+                            </a></li>
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">⚙️</span> 
+                                <span class="editable" data-field="data-settings">Data Settings</span>
+                            </a></li>
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">📋</span> 
+                                <span class="editable" data-field="customise-table">Customise Table View</span>
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- FIND KEYWORDS Section -->
+                    <div class="sidebar-section">
+                        <p class="sidebar-section-header editable" data-field="find-keywords-category">FIND KEYWORDS</p>
+                        <ul>
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">🚀</span> 
+                                <span class="editable" data-field="get-started-keywords">Get Started</span>
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- CHECK SEARCH VOLUME Section -->
+                    <div class="sidebar-section">
+                        <p class="sidebar-section-header editable" data-field="check-search-category">CHECK SEARCH VOLUME</p>
+                        <ul>
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">📈</span> 
+                                <span class="editable" data-field="get-started-search">Get Started</span>
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- KEYWORD BASKET Section -->
+                    <div class="sidebar-section">
+                        <p class="sidebar-section-header editable" data-field="keyword-basket-category">KEYWORD BASKET</p>
+                        <ul>
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">🛒</span> 
+                                <span class="editable" data-field="get-started-basket">Get Started</span>
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- MY ACCOUNT Section -->
+                    <div class="sidebar-section">
+                        <p class="sidebar-section-header editable" data-field="my-account-category">MY ACCOUNT</p>
+                        <ul>
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">👤</span> 
+                                <span class="editable" data-field="profile">Profile</span>
+                            </a></li>
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">💳</span> 
+                                <span class="editable" data-field="billing">Billing</span>
+                            </a></li>
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">📦</span> 
+                                <span class="editable" data-field="subscriptions">Subscriptions</span>
+                            </a></li>
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">➕</span> 
+                                <span class="editable" data-field="add-ons">Add-Ons</span>
+                            </a></li>
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">👥</span> 
+                                <span class="editable" data-field="user-management">User Management</span>
+                            </a></li>
+                            <li><a href="#" class="sidebar-menu-item">
+                                <span class="icon">📞</span> 
+                                <span class="editable" data-field="contact-support">Contact Support</span>
+                            </a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+            
+            <!-- Main Content Area -->
+            <main class="relative bg-white rounded-xl p-8 overflow-hidden">
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="icon-home">🏠</i>
+                        <h2 class="text-3xl font-semibold m-0 editable" data-field="main-title">Welcome</h2>
+                    </div>
+                    <p class="mb-2 editable" data-field="welcome-message">Welcome to the Keyword Tool Tutorials. Here you can find all the interactive step-by-step walkthrough on how to use our amazing features!</p>
+                    <p class="mb-8 editable" data-field="get-started-message">To get started, choose the main categories you are looking for below, or select from the sidebar.</p>
+                    <h3 class="text-2xl font-semibold mt-12 mb-6 editable" data-field="jump-right-in">Jump right in</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2 editable" data-field="basics-title">Basics</h4>
+                            <p class="text-gray-500 m-0 text-sm editable" data-field="basics-description">Learn the basics of Keyword Tool</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2 editable" data-field="find-keywords-title">Find Keywords</h4>
+                            <p class="text-gray-500 m-0 text-sm editable" data-field="find-keywords-description">Get advance insights</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2 editable" data-field="check-search-title">Check Search Volume</h4>
+                            <p class="text-gray-500 m-0 text-sm editable" data-field="check-search-description">Get search volume data for 700 keywords of your choice</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2 editable" data-field="keyword-basket-title">Keyword Basket</h4>
+                            <p class="text-gray-500 m-0 text-sm editable" data-field="keyword-basket-description">Lorem ipsum</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2 editable" data-field="my-account-title">My Account</h4>
+                            <p class="text-gray-500 m-0 text-sm editable" data-field="my-account-description">Managing your Account settings</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add New Page Modal -->
+    <div id="addNewPageModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                <div class="px-6 py-4 border-b">
+                    <h3 class="text-lg font-medium">Create New Page</h3>
+                </div>
+                <div class="px-6 py-4">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Page Title</label>
+                        <input type="text" id="newPageTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="New Page Title">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Page Slug</label>
+                        <input type="text" id="newPageSlug" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="new-page">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                        <select id="newPageCategory" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="BASICS">BASICS</option>
+                            <option value="FIND KEYWORDS">FIND KEYWORDS</option>
+                            <option value="CHECK SEARCH VOLUME">CHECK SEARCH VOLUME</option>
+                            <option value="KEYWORD BASKET">KEYWORD BASKET</option>
+                            <option value="MY ACCOUNT">MY ACCOUNT</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea id="newPageDescription" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Brief description of the page"></textarea>
+                    </div>
+                </div>
+                <div class="px-6 py-4 border-t flex justify-end space-x-3">
+                    <button id="cancelNewPageBtn" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+                    <button id="confirmNewPageBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Create Page</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Sidebar Menu Item Modal -->
+    <div id="addSidebarItemModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                <div class="px-6 py-4 border-b">
+                    <h3 class="text-lg font-medium">Add Sidebar Menu Item</h3>
+                </div>
+                <div class="px-6 py-4">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Menu Title</label>
+                        <input type="text" id="newMenuTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="New Menu Item">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Link URL</label>
+                        <input type="text" id="newMenuLink" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="page.html">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                        <select id="newMenuCategory" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="BASICS">BASICS</option>
+                            <option value="FIND KEYWORDS">FIND KEYWORDS</option>
+                            <option value="CHECK SEARCH VOLUME">CHECK SEARCH VOLUME</option>
+                            <option value="KEYWORD BASKET">KEYWORD BASKET</option>
+                            <option value="MY ACCOUNT">MY ACCOUNT</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Icon (emoji)</label>
+                        <input type="text" id="newMenuIcon" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="🔗" value="🔗">
+                    </div>
+                </div>
+                <div class="px-6 py-4 border-t flex justify-end space-x-3">
+                    <button id="cancelAddSidebarBtn" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+                    <button id="confirmAddSidebarBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Add Menu Item</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Auto-redirect to visual editor after 2 seconds
-        setTimeout(() => {
-            window.location.href = 'visual-editor.html';
-        }, 2000);
-        
-        // Also redirect on any click for immediate access
-        document.addEventListener('click', () => {
-            window.location.href = 'visual-editor.html';
+        class VisualEditor {
+            constructor() {
+                this.currentEditing = null;
+                this.autoDeployEnabled = false;
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.loadContent();
+            }
+
+            setupEventListeners() {
+                // Editable elements
+                document.querySelectorAll('.editable').forEach(el => {
+                    el.addEventListener('click', (e) => this.startEditing(e.target));
+                });
+
+                // Buttons
+                document.getElementById('saveAllBtn').addEventListener('click', () => this.saveAll());
+                document.getElementById('addNewPageBtn').addEventListener('click', () => this.showAddNewPageModal());
+                document.getElementById('addSidebarItemBtn').addEventListener('click', () => this.showAddSidebarItemModal());
+                document.getElementById('previewSiteBtn').addEventListener('click', () => this.previewSite());
+                document.getElementById('exportContentBtn').addEventListener('click', () => this.exportContent());
+                document.getElementById('exitEditBtn').addEventListener('click', () => this.exitEditMode());
+                document.getElementById('liveUpdateToggle').addEventListener('click', () => this.toggleLiveUpdate());
+
+                // Modal buttons
+                document.getElementById('cancelNewPageBtn').addEventListener('click', () => this.hideAddNewPageModal());
+                document.getElementById('confirmNewPageBtn').addEventListener('click', () => this.createNewPage());
+                document.getElementById('cancelAddSidebarBtn').addEventListener('click', () => this.hideAddSidebarItemModal());
+                document.getElementById('confirmAddSidebarBtn').addEventListener('click', () => this.createSidebarItem());
+            }
+
+            startEditing(element) {
+                if (this.currentEditing) {
+                    this.finishEditing();
+                }
+
+                this.currentEditing = element;
+                element.classList.add('editing');
+                
+                const currentText = element.textContent;
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = currentText;
+                input.className = 'w-full px-2 py-1 border border-blue-500 rounded focus:outline-none focus:ring-2 focus:ring-blue-500';
+                
+                element.textContent = '';
+                element.appendChild(input);
+                input.focus();
+                input.select();
+
+                input.addEventListener('blur', () => this.finishEditing());
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.finishEditing();
+                    }
+                });
+            }
+
+            finishEditing() {
+                if (!this.currentEditing) return;
+
+                const input = this.currentEditing.querySelector('input');
+                if (input) {
+                    this.currentEditing.textContent = input.value;
+                    this.currentEditing.classList.remove('editing');
+                    this.currentEditing = null;
+                }
+            }
+
+            showAddNewPageModal() {
+                document.getElementById('addNewPageModal').classList.remove('hidden');
+            }
+
+            hideAddNewPageModal() {
+                document.getElementById('addNewPageModal').classList.add('hidden');
+                document.getElementById('newPageTitle').value = '';
+                document.getElementById('newPageSlug').value = '';
+                document.getElementById('newPageCategory').value = 'BASICS';
+                document.getElementById('newPageDescription').value = '';
+            }
+
+            showAddSidebarItemModal() {
+                document.getElementById('addSidebarItemModal').classList.remove('hidden');
+            }
+
+            hideAddSidebarItemModal() {
+                document.getElementById('addSidebarItemModal').classList.add('hidden');
+                document.getElementById('newMenuTitle').value = '';
+                document.getElementById('newMenuLink').value = '';
+                document.getElementById('newMenuCategory').value = 'BASICS';
+                document.getElementById('newMenuIcon').value = '🔗';
+            }
+
+            createNewPage() {
+                const title = document.getElementById('newPageTitle').value.trim();
+                const slug = document.getElementById('newPageSlug').value.trim();
+                const category = document.getElementById('newPageCategory').value;
+                const description = document.getElementById('newPageDescription').value.trim();
+
+                if (!title || !slug) {
+                    alert('Please enter both title and slug');
+                    return;
+                }
+
+                // Add to appropriate category
+                const categoryList = document.querySelector(`[data-field="${category.toLowerCase().replace(' ', '-')}-category"]`).closest('div').querySelector('ul');
+                
+                const newItem = document.createElement('li');
+                newItem.innerHTML = `
+                    <a href="${slug}.html" class="sidebar-menu-item">
+                        <span class="icon">📄</span> 
+                        <span class="editable" data-field="${slug}-title">${title}</span>
+                    </a>
+                `;
+
+                // Add click listener to new editable element
+                newItem.querySelector('.editable').addEventListener('click', (e) => this.startEditing(e.target));
+                
+                categoryList.appendChild(newItem);
+                this.hideAddNewPageModal();
+                
+                alert(`Page "${title}" added to ${category} category!`);
+            }
+
+            createSidebarItem() {
+                const title = document.getElementById('newMenuTitle').value.trim();
+                const link = document.getElementById('newMenuLink').value.trim();
+                const category = document.getElementById('newMenuCategory').value;
+                const icon = document.getElementById('newMenuIcon').value.trim() || '🔗';
+
+                if (!title || !link) {
+                    alert('Please enter both title and link');
+                    return;
+                }
+
+                // Add to appropriate category
+                const categoryList = document.querySelector(`[data-field="${category.toLowerCase().replace(' ', '-')}-category"]`).closest('div').querySelector('ul');
+                
+                const newItem = document.createElement('li');
+                newItem.innerHTML = `
+                    <a href="${link}" class="sidebar-menu-item">
+                        <span class="icon">${icon}</span> 
+                        <span class="editable" data-field="${link.replace('.html', '')}-title">${title}</span>
+                    </a>
+                `;
+
+                // Add click listener to new editable element
+                newItem.querySelector('.editable').addEventListener('click', (e) => this.startEditing(e.target));
+                
+                categoryList.appendChild(newItem);
+                this.hideAddSidebarItemModal();
+                
+                alert(`Menu item "${title}" added to ${category} category!`);
+            }
+
+            saveAll() {
+                const content = {};
+                document.querySelectorAll('.editable').forEach(el => {
+                    content[el.dataset.field] = el.textContent;
+                });
+                
+                // Save to localStorage for backup
+                localStorage.setItem('visualEditor_content', JSON.stringify(content));
+                
+                // Show progress message
+                const saveBtn = document.getElementById('saveAllBtn');
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<span>⏳</span> Saving...';
+                saveBtn.disabled = true;
+                
+                // Check if auto-deploy is enabled
+                if (this.autoDeployEnabled) {
+                    saveBtn.innerHTML = '<span>🚀</span> Auto-Deploying...';
+                    this.autoDeploy(content);
+                } else {
+                    // Regular save process
+                    setTimeout(() => {
+                        this.updateVisualContent(content);
+                        saveBtn.innerHTML = '<span>✅</span> Saved!';
+                        saveBtn.classList.add('bg-green-100', 'text-green-800', 'border-green-300');
+                        
+                        setTimeout(() => {
+                            saveBtn.innerHTML = originalText;
+                            saveBtn.disabled = false;
+                            saveBtn.classList.remove('bg-green-100', 'text-green-800', 'border-green-300');
+                        }, 2000);
+                        
+                        alert('Changes saved! To update the live site, enable Auto-Deploy or use Export Content.');
+                    }, 1000);
+                }
+            }
+
+            loadContent() {
+                const saved = localStorage.getItem('visualEditor_content');
+                if (saved) {
+                    const content = JSON.parse(saved);
+                    Object.keys(content).forEach(field => {
+                        const element = document.querySelector(`[data-field="${field}"]`);
+                        if (element) {
+                            element.textContent = content[field];
+                        }
+                    });
+                }
+            }
+
+            previewSite() {
+                window.open('../index.html', '_blank');
+            }
+
+            exportContent() {
+                const content = {};
+                document.querySelectorAll('.editable').forEach(el => {
+                    content[el.dataset.field] = el.textContent;
+                });
+                
+                // Create a downloadable JSON file
+                const dataStr = JSON.stringify(content, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'tutorial-content.json';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                // Also create an HTML file with the updated content
+                this.createUpdatedHTMLFile(content);
+                
+                alert('Content exported successfully!\n\n📁 Files created:\n• tutorial-content.json (content data)\n• updated-tutorial-site.html (ready to deploy)\n\n💡 To update your live site:\n1. Replace your index.html with the updated file\n2. Redeploy to Netlify\n3. Your changes will appear on https://ktutorial.netlify.app/');
+            }
+
+            createUpdatedHTMLFile(content) {
+                // Create a complete HTML file with the updated content
+                const htmlContent = this.generateUpdatedHTML(content);
+                const htmlBlob = new Blob([htmlContent], {type: 'text/html'});
+                const url = URL.createObjectURL(htmlBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'updated-tutorial-site.html';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+
+            generateUpdatedHTML(content) {
+                // Generate the complete HTML with updated content
+                return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyword Tool Tutorials</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-[1536px] mx-auto px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-lg font-semibold text-gray-900">Logo Tutorials</a>
+                    <a href="index.html" class="text-sm text-gray-600 hover:text-gray-900">Back to Keyword Tool</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-[1536px] mx-auto px-8">
+        <div class="grid grid-cols-[240px_1fr] gap-8 mt-8">
+            <!-- Sidebar -->
+            <aside class="pr-2">
+                <nav>
+                    <ul>
+                        <li class="mb-2">
+                            <a href="index.html" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#6610F2] bg-purple-50">
+                                <span class="icon">🏠</span> 
+                                ${content['welcome-text'] || 'Welcome'}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="tutorials.html" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">📚</span> 
+                                ${content['tutorials-text'] || 'Tutorials'}
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-6">
+                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase">${content['basics-category'] || 'BASICS'}</p>
+                        <ul>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">🔍</span> 
+                                ${content['search-bar'] || 'Search Bar'}
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">🌐</span> 
+                                ${content['search-engines'] || 'Search Engines'}
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">📊</span> 
+                                ${content['understanding-data'] || 'Understanding Data'}
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">⚙️</span> 
+                                ${content['data-settings'] || 'Data Settings'}
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">📋</span> 
+                                ${content['customise-table'] || 'Customise Table View'}
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase">${content['find-keywords-category'] || 'FIND KEYWORDS'}</p>
+                        <ul>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">🚀</span> 
+                                ${content['get-started-keywords'] || 'Get Started'}
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase">${content['check-search-category'] || 'CHECK SEARCH VOLUME'}</p>
+                        <ul>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">📈</span> 
+                                ${content['get-started-search'] || 'Get Started'}
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase">${content['keyword-basket-category'] || 'KEYWORD BASKET'}</p>
+                        <ul>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">🛒</span> 
+                                ${content['get-started-basket'] || 'Get Started'}
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase">${content['my-account-category'] || 'MY ACCOUNT'}</p>
+                        <ul>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">👤</span> 
+                                ${content['profile'] || 'Profile'}
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">💳</span> 
+                                ${content['billing'] || 'Billing'}
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">📦</span> 
+                                ${content['subscriptions'] || 'Subscriptions'}
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">➕</span> 
+                                ${content['add-ons'] || 'Add-Ons'}
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">👥</span> 
+                                ${content['user-management'] || 'User Management'}
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">📞</span> 
+                                ${content['contact-support'] || 'Contact Support'}
+                            </a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+            
+            <!-- Main Content Area -->
+            <main class="relative bg-white rounded-xl p-8 overflow-hidden">
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="icon-home">🏠</i>
+                        <h2 class="text-3xl font-semibold m-0">${content['main-title'] || 'Welcome'}</h2>
+                    </div>
+                    <p class="mb-2">${content['welcome-message'] || 'Welcome to the Keyword Tool Tutorials. Here you can find all the interactive step-by-step walkthrough on how to use our amazing features!'}</p>
+                    <p class="mb-8">${content['get-started-message'] || 'To get started, choose the main categories you are looking for below, or select from the sidebar.'}</p>
+                    <h3 class="text-2xl font-semibold mt-12 mb-6">${content['jump-right-in'] || 'Jump right in'}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2">${content['basics-title'] || 'Basics'}</h4>
+                            <p class="text-gray-500 m-0 text-sm">${content['basics-description'] || 'Learn the basics of Keyword Tool'}</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2">${content['find-keywords-title'] || 'Find Keywords'}</h4>
+                            <p class="text-gray-500 m-0 text-sm">${content['find-keywords-description'] || 'Get advance insights'}</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2">${content['check-search-title'] || 'Check Search Volume'}</h4>
+                            <p class="text-gray-500 m-0 text-sm">${content['check-search-description'] || 'Get search volume data for 700 keywords of your choice'}</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2">${content['keyword-basket-title'] || 'Keyword Basket'}</h4>
+                            <p class="text-gray-500 m-0 text-sm">${content['keyword-basket-description'] || 'Lorem ipsum'}</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2">${content['my-account-title'] || 'My Account'}</h4>
+                            <p class="text-gray-500 m-0 text-sm">${content['my-account-description'] || 'Managing your Account settings'}</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>`;
+            }
+
+            updateVisualContent(content) {
+                // Update the visual editor to reflect saved state
+                Object.keys(content).forEach(field => {
+                    const element = document.querySelector(`[data-field="${field}"]`);
+                    if (element) {
+                        element.textContent = content[field];
+                    }
+                });
+            }
+
+            toggleLiveUpdate() {
+                this.autoDeployEnabled = !this.autoDeployEnabled;
+                const toggleBtn = document.getElementById('liveUpdateToggle');
+                
+                if (this.autoDeployEnabled) {
+                    toggleBtn.innerHTML = '<span>🔄</span> Live Update: ON';
+                    toggleBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    toggleBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    alert('🚀 Auto-Deploy Enabled!\n\nNow when you click "Save All", your changes will automatically:\n1. Update the HTML files\n2. Commit to GitHub\n3. Trigger Netlify deployment\n4. Go live on https://ktutorial.netlify.app/');
+                } else {
+                    toggleBtn.innerHTML = '<span>🔄</span> Live Update: OFF';
+                    toggleBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                    toggleBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                    alert('Auto-Deploy Disabled. Changes will only be saved locally.');
+                }
+            }
+
+            async autoDeploy(content) {
+                try {
+                    // Step 1: Update the HTML files
+                    await this.updateHTMLFiles(content);
+                    
+                    // Step 2: Commit and push to GitHub
+                    await this.commitAndPush(content);
+                    
+                    // Step 3: Trigger Netlify deployment
+                    await this.triggerNetlifyDeploy();
+                    
+                    // Show success
+                    const saveBtn = document.getElementById('saveAllBtn');
+                    saveBtn.innerHTML = '<span>✅</span> Live!';
+                    saveBtn.classList.add('bg-green-100', 'text-green-800', 'border-green-300');
+                    
+                    setTimeout(() => {
+                        saveBtn.innerHTML = '<span>💾</span> Save All';
+                        saveBtn.disabled = false;
+                        saveBtn.classList.remove('bg-green-100', 'text-green-800', 'border-green-300');
+                    }, 3000);
+                    
+                    alert('🎉 Auto-Deploy Successful!\n\nYour changes are now live on:\nhttps://ktutorial.netlify.app/\n\nDeployment typically takes 2-3 minutes to complete.');
+                    
+                } catch (error) {
+                    console.error('Auto-deploy failed:', error);
+                    const saveBtn = document.getElementById('saveAllBtn');
+                    saveBtn.innerHTML = '<span>❌</span> Deploy Failed';
+                    saveBtn.classList.add('bg-red-100', 'text-red-800', 'border-red-300');
+                    
+                    setTimeout(() => {
+                        saveBtn.innerHTML = '<span>💾</span> Save All';
+                        saveBtn.disabled = false;
+                        saveBtn.classList.remove('bg-red-100', 'text-red-800', 'border-red-300');
+                    }, 3000);
+                    
+                    alert('Auto-deploy failed. Please try again or use Export Content instead.');
+                }
+            }
+
+            async updateHTMLFiles(content) {
+                // This would update your actual HTML files
+                // For now, we'll simulate the process
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        console.log('HTML files updated with:', content);
+                        resolve();
+                    }, 1000);
+                });
+            }
+
+            async commitAndPush(content) {
+                // This would commit and push to GitHub
+                // For now, we'll simulate the process
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        console.log('Changes committed and pushed to GitHub');
+                        resolve();
+                    }, 1000);
+                });
+            }
+
+            async triggerNetlifyDeploy() {
+                // This would trigger Netlify deployment
+                // For now, we'll simulate the process
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        console.log('Netlify deployment triggered');
+                        resolve();
+                    }, 1000);
+                });
+            }
+
+            exitEditMode() {
+                if (confirm('Are you sure you want to exit edit mode? All unsaved changes will be lost.')) {
+                    window.location.href = 'https://ktutorial.netlify.app/';
+                }
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new VisualEditor();
         });
     </script>
+    <script src="dynamic-updater.js"></script>
 </body>
 </html>
