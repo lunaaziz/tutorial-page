@@ -108,7 +108,7 @@
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Login Screen -->
+    <!-- Simple Login Screen -->
     <div id="loginScreen" class="fixed inset-0 bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center z-50">
         <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
             <div class="text-center mb-8">
@@ -116,15 +116,14 @@
                     <span class="text-3xl text-white">🔐</span>
                 </div>
                 <h1 class="text-2xl font-bold text-gray-900 mb-2">Admin Access</h1>
-                <p class="text-gray-600">Sign in with your Keyword Tool account</p>
+                <p class="text-gray-600">Sign in with Google to access admin panel</p>
             </div>
             
             <div class="space-y-4">
                 <div id="g_id_onload" 
                      data-client_id=""
                      data-callback="handleCredentialResponse"
-                     data-auto_prompt="false"
-                     data-context="signin">
+                     data-auto_prompt="false">
                 </div>
                 <div id="g_id_signin" 
                      class="g_id_signin w-full"
@@ -133,13 +132,12 @@
                      data-theme="outline"
                      data-text="sign_in_with"
                      data-shape="rectangular"
-                     data-logo_alignment="left"
-                     data-width="100%">
+                     data-logo_alignment="left">
                 </div>
                 
                 <div class="text-center">
                     <p class="text-sm text-gray-500">
-                        Only @keywordtool.io accounts allowed
+                        Main admin: luna@keywordtool.io
                     </p>
                 </div>
             </div>
@@ -1354,21 +1352,20 @@ ${content['my-account-description'] || 'Managing your Account settings'}`;
             checkAuthStatus();
         });
 
-        // Google OAuth Authentication
+        // Simple Google OAuth Authentication
         function checkAuthStatus() {
             // Set Google OAuth client ID from config
-            if (window.AUTH_CONFIG && window.AUTH_CONFIG.GOOGLE_CLIENT_ID && window.AUTH_CONFIG.GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID') {
+            if (window.AUTH_CONFIG && window.AUTH_CONFIG.GOOGLE_CLIENT_ID && window.AUTH_CONFIG.GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID_HERE') {
                 document.getElementById('g_id_onload').setAttribute('data-client_id', window.AUTH_CONFIG.GOOGLE_CLIENT_ID);
                 
                 // Check if user is already authenticated
                 const user = JSON.parse(localStorage.getItem('adminUser') || 'null');
-                if (user && user.email && user.email.endsWith('@keywordtool.io')) {
+                if (user && user.email === window.AUTH_CONFIG.MAIN_ADMIN_EMAIL) {
                     showAdminInterface();
                 } else {
                     showLoginScreen();
                 }
             } else {
-                console.error('Google OAuth client ID not configured. Please update auth-config.js');
                 showConfigurationError();
             }
         }
@@ -1377,13 +1374,9 @@ ${content['my-account-description'] || 'Managing your Account settings'}`;
             document.getElementById('loginScreen').innerHTML = `
                 <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 text-center">
                     <div class="text-red-500 text-6xl mb-4">⚠️</div>
-                    <h1 class="text-2xl font-bold text-gray-900 mb-2">Configuration Required</h1>
+                    <h1 class="text-2xl font-bold text-gray-900 mb-2">Setup Required</h1>
                     <p class="text-gray-600 mb-4">Google OAuth client ID not configured.</p>
-                    <div class="bg-gray-100 p-4 rounded-lg text-left text-sm font-mono mb-4">
-                        <p class="text-gray-700">Please update <code>admin/auth-config.js</code>:</p>
-                        <p class="text-gray-600 mt-2">const GOOGLE_CLIENT_ID = 'your-actual-client-id.apps.googleusercontent.com';</p>
-                    </div>
-                    <p class="text-sm text-gray-500">Get your client ID from <a href="https://console.cloud.google.com/" target="_blank" class="text-blue-600 hover:underline">Google Cloud Console</a></p>
+                    <p class="text-sm text-gray-500">Update admin/auth-config.js with your Google OAuth client ID</p>
                 </div>
             `;
         }
@@ -1392,8 +1385,8 @@ ${content['my-account-description'] || 'Managing your Account settings'}`;
             // Decode the JWT token
             const payload = JSON.parse(atob(response.credential.split('.')[1]));
             
-            // Check if user has @keywordtool.io domain
-            if (payload.email && payload.email.endsWith('@keywordtool.io')) {
+            // Check if user is the main admin
+            if (payload.email === window.AUTH_CONFIG.MAIN_ADMIN_EMAIL) {
                 // Store user info
                 const user = {
                     email: payload.email,
@@ -1410,7 +1403,7 @@ ${content['my-account-description'] || 'Managing your Account settings'}`;
                 const editor = new VisualEditor();
                 setTimeout(() => editor.updateContentCounters(), 100);
             } else {
-                alert('Access denied. Only @keywordtool.io accounts are allowed.');
+                alert('Access denied. Only the main admin can access this panel.');
                 // Sign out from Google
                 google.accounts.id.disableAutoSelect();
             }
