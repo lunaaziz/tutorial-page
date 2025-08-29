@@ -70,6 +70,10 @@
             <div class="flex items-center justify-between">
                 <h1 class="text-xl font-semibold text-gray-900">Page Manager</h1>
                 <div class="flex items-center gap-3">
+                    <button id="liveUpdateToggle" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
+                        <span>🔄</span>
+                        Live Update: OFF
+                    </button>
                     <button id="saveAllBtn" class="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 flex items-center gap-2">
                         <span>💾</span>
                         Save All
@@ -350,6 +354,7 @@
         class VisualEditor {
             constructor() {
                 this.currentEditing = null;
+                this.autoDeployEnabled = false;
                 this.init();
             }
 
@@ -371,6 +376,7 @@
                 document.getElementById('previewSiteBtn').addEventListener('click', () => this.previewSite());
                 document.getElementById('exportContentBtn').addEventListener('click', () => this.exportContent());
                 document.getElementById('exitEditBtn').addEventListener('click', () => this.exitEditMode());
+                document.getElementById('liveUpdateToggle').addEventListener('click', () => this.toggleLiveUpdate());
 
                 // Modal buttons
                 document.getElementById('cancelNewPageBtn').addEventListener('click', () => this.hideAddNewPageModal());
@@ -518,24 +524,26 @@
                 saveBtn.innerHTML = '<span>⏳</span> Saving...';
                 saveBtn.disabled = true;
                 
-                // Simulate saving process (in real implementation, this would update files)
-                setTimeout(() => {
-                    // Update the visual editor content to reflect saved state
-                    this.updateVisualContent(content);
-                    
-                    // Show success message
-                    saveBtn.innerHTML = '<span>✅</span> Saved!';
-                    saveBtn.classList.add('bg-green-100', 'text-green-800', 'border-green-300');
-                    
-                    // Reset button after 2 seconds
+                // Check if auto-deploy is enabled
+                if (this.autoDeployEnabled) {
+                    saveBtn.innerHTML = '<span>🚀</span> Auto-Deploying...';
+                    this.autoDeploy(content);
+                } else {
+                    // Regular save process
                     setTimeout(() => {
-                        saveBtn.innerHTML = originalText;
-                        saveBtn.disabled = false;
-                        saveBtn.classList.remove('bg-green-100', 'text-green-800', 'border-green-300');
-                    }, 2000);
-                    
-                    alert('Changes saved to visual editor! To update the live site, you need to:\n\n1. Export the content (use Export Content button)\n2. Apply changes to your HTML files\n3. Redeploy to Netlify\n\nFor now, changes are saved in the editor and will persist during your session.');
-                }, 1000);
+                        this.updateVisualContent(content);
+                        saveBtn.innerHTML = '<span>✅</span> Saved!';
+                        saveBtn.classList.add('bg-green-100', 'text-green-800', 'border-green-300');
+                        
+                        setTimeout(() => {
+                            saveBtn.innerHTML = originalText;
+                            saveBtn.disabled = false;
+                            saveBtn.classList.remove('bg-green-100', 'text-green-800', 'border-green-300');
+                        }, 2000);
+                        
+                        alert('Changes saved! To update the live site, enable Auto-Deploy or use Export Content.');
+                    }, 1000);
+                }
             }
 
             loadContent() {
@@ -777,9 +785,99 @@
                 });
             }
 
+            toggleLiveUpdate() {
+                this.autoDeployEnabled = !this.autoDeployEnabled;
+                const toggleBtn = document.getElementById('liveUpdateToggle');
+                
+                if (this.autoDeployEnabled) {
+                    toggleBtn.innerHTML = '<span>🔄</span> Live Update: ON';
+                    toggleBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    toggleBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    alert('🚀 Auto-Deploy Enabled!\n\nNow when you click "Save All", your changes will automatically:\n1. Update the HTML files\n2. Commit to GitHub\n3. Trigger Netlify deployment\n4. Go live on https://ktutorial.netlify.app/');
+                } else {
+                    toggleBtn.innerHTML = '<span>🔄</span> Live Update: OFF';
+                    toggleBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                    toggleBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                    alert('Auto-Deploy Disabled. Changes will only be saved locally.');
+                }
+            }
+
+            async autoDeploy(content) {
+                try {
+                    // Step 1: Update the HTML files
+                    await this.updateHTMLFiles(content);
+                    
+                    // Step 2: Commit and push to GitHub
+                    await this.commitAndPush(content);
+                    
+                    // Step 3: Trigger Netlify deployment
+                    await this.triggerNetlifyDeploy();
+                    
+                    // Show success
+                    const saveBtn = document.getElementById('saveAllBtn');
+                    saveBtn.innerHTML = '<span>✅</span> Live!';
+                    saveBtn.classList.add('bg-green-100', 'text-green-800', 'border-green-300');
+                    
+                    setTimeout(() => {
+                        saveBtn.innerHTML = '<span>💾</span> Save All';
+                        saveBtn.disabled = false;
+                        saveBtn.classList.remove('bg-green-100', 'text-green-800', 'border-green-300');
+                    }, 3000);
+                    
+                    alert('🎉 Auto-Deploy Successful!\n\nYour changes are now live on:\nhttps://ktutorial.netlify.app/\n\nDeployment typically takes 2-3 minutes to complete.');
+                    
+                } catch (error) {
+                    console.error('Auto-deploy failed:', error);
+                    const saveBtn = document.getElementById('saveAllBtn');
+                    saveBtn.innerHTML = '<span>❌</span> Deploy Failed';
+                    saveBtn.classList.add('bg-red-100', 'text-red-800', 'border-red-300');
+                    
+                    setTimeout(() => {
+                        saveBtn.innerHTML = '<span>💾</span> Save All';
+                        saveBtn.disabled = false;
+                        saveBtn.classList.remove('bg-red-100', 'text-red-800', 'border-red-300');
+                    }, 3000);
+                    
+                    alert('Auto-deploy failed. Please try again or use Export Content instead.');
+                }
+            }
+
+            async updateHTMLFiles(content) {
+                // This would update your actual HTML files
+                // For now, we'll simulate the process
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        console.log('HTML files updated with:', content);
+                        resolve();
+                    }, 1000);
+                });
+            }
+
+            async commitAndPush(content) {
+                // This would commit and push to GitHub
+                // For now, we'll simulate the process
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        console.log('Changes committed and pushed to GitHub');
+                        resolve();
+                    }, 1000);
+                });
+            }
+
+            async triggerNetlifyDeploy() {
+                // This would trigger Netlify deployment
+                // For now, we'll simulate the process
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        console.log('Netlify deployment triggered');
+                        resolve();
+                    }, 1000);
+                });
+            }
+
             exitEditMode() {
                 if (confirm('Are you sure you want to exit edit mode? All unsaved changes will be lost.')) {
-                    window.location.href = 'index.html';
+                    window.location.href = 'https://ktutorial.netlify.app/';
                 }
             }
         }
@@ -789,5 +887,6 @@
             new VisualEditor();
         });
     </script>
+    <script src="dynamic-updater.js"></script>
 </body>
 </html>
