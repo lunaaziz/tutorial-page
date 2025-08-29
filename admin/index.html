@@ -6,6 +6,8 @@
     <title>Admin - Keyword Tool Tutorials</title>
     <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="auth-config.js"></script>
     <style>
         .editable { 
             border: 2px dashed transparent; 
@@ -106,15 +108,58 @@
     </style>
 </head>
 <body class="bg-gray-50">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="fixed inset-0 bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-3xl text-white">🔐</span>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">Admin Access</h1>
+                <p class="text-gray-600">Sign in with your Keyword Tool account</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div id="g_id_onload" 
+                     data-client_id=""
+                     data-callback="handleCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
+                <div id="g_id_signin" 
+                     class="g_id_signin w-full"
+                     data-type="standard"
+                     data-size="large"
+                     data-theme="outline"
+                     data-text="sign_in_with"
+                     data-shape="rectangular"
+                     data-logo_alignment="left">
+                </div>
+                
+                <div class="text-center">
+                    <p class="text-sm text-gray-500">
+                        Only @keywordtool.io accounts allowed
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-
-    <!-- Top Bar for Adding New Pages -->
+    <!-- Main Admin Interface (Hidden until login) -->
+    <div id="adminInterface" class="hidden">
+        <!-- Top Bar for Adding New Pages -->
     <div class="bg-white border-b border-gray-200 px-8 py-4">
         <div class="max-w-[1536px] mx-auto">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4">
                     <h1 class="text-xl font-semibold text-gray-900">📚 Content Manager</h1>
                     <span class="text-sm text-gray-500">GitBook-style CMS</span>
+                    <div id="userInfo" class="hidden ml-4 flex items-center gap-2 text-sm text-gray-600">
+                        <span>👤</span>
+                        <span id="userName">User</span>
+                        <span>(</span>
+                        <span id="userEmail">email@keywordtool.io</span>
+                        <span>)</span>
+                    </div>
                 </div>
                 <div class="flex items-center gap-3">
                     <button id="liveUpdateToggle" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
@@ -144,6 +189,10 @@
                     <button id="exitEditBtn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 flex items-center gap-2">
                         <span>❌</span>
                         Exit Edit
+                    </button>
+                    <button id="logoutBtn" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 flex items-center gap-2" onclick="logout()">
+                        <span>🚪</span>
+                        Logout
                     </button>
                 </div>
             </div>
@@ -1146,6 +1195,7 @@ ${content['my-account-description'] || 'Managing your Account settings'}`;
             </main>
         </div>
     </div>
+    </div> <!-- Close adminInterface div -->
 
     <!-- Category Management Modal -->
     <div id="categoryManagementModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
@@ -1298,10 +1348,94 @@ ${content['my-account-description'] || 'Managing your Account settings'}`;
 
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            const editor = new VisualEditor();
-            // Update content counters after initialization
-            setTimeout(() => editor.updateContentCounters(), 100);
+            // Check if user is already authenticated
+            checkAuthStatus();
         });
+
+        // Google OAuth Authentication
+        function checkAuthStatus() {
+            // Set Google OAuth client ID from config
+            if (window.AUTH_CONFIG && window.AUTH_CONFIG.GOOGLE_CLIENT_ID) {
+                document.getElementById('g_id_onload').setAttribute('data-client_id', window.AUTH_CONFIG.GOOGLE_CLIENT_ID);
+            } else {
+                console.error('Google OAuth client ID not configured. Please update auth-config.js');
+                document.getElementById('loginScreen').innerHTML = `
+                    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 text-center">
+                        <div class="text-red-500 text-6xl mb-4">⚠️</div>
+                        <h1 class="text-2xl font-bold text-gray-900 mb-2">Configuration Required</h1>
+                        <p class="text-gray-600 mb-4">Google OAuth client ID not configured.</p>
+                        <p class="text-sm text-gray-500">Please update admin/auth-config.js with your Google OAuth client ID.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const user = JSON.parse(localStorage.getItem('adminUser') || 'null');
+            if (user && user.email && user.email.endsWith('@keywordtool.io')) {
+                showAdminInterface();
+            } else {
+                showLoginScreen();
+            }
+        }
+
+        function handleCredentialResponse(response) {
+            // Decode the JWT token
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            
+            // Check if user has @keywordtool.io domain
+            if (payload.email && payload.email.endsWith('@keywordtool.io')) {
+                // Store user info
+                const user = {
+                    email: payload.email,
+                    name: payload.name,
+                    picture: payload.picture,
+                    sub: payload.sub
+                };
+                localStorage.setItem('adminUser', JSON.stringify(user));
+                
+                // Show admin interface
+                showAdminInterface();
+                
+                // Initialize the editor
+                const editor = new VisualEditor();
+                setTimeout(() => editor.updateContentCounters(), 100);
+            } else {
+                alert('Access denied. Only @keywordtool.io accounts are allowed.');
+                // Sign out from Google
+                google.accounts.id.disableAutoSelect();
+            }
+        }
+
+        function showLoginScreen() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('adminInterface').classList.add('hidden');
+        }
+
+        function showAdminInterface() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('adminInterface').classList.remove('hidden');
+            
+            // Display user info
+            const user = JSON.parse(localStorage.getItem('adminUser') || '{}');
+            if (user.name && user.email) {
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('userInfo').classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            // Clear user data
+            localStorage.removeItem('adminUser');
+            
+            // Sign out from Google
+            if (window.google && google.accounts) {
+                google.accounts.id.disableAutoSelect();
+            }
+            
+            // Show login screen
+            showLoginScreen();
+        }
 
         // Global function for editing sidebar items
         function editSidebarItem(button, fieldName, currentUrl) {
