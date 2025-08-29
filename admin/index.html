@@ -123,7 +123,8 @@
                 <div id="g_id_onload" 
                      data-client_id=""
                      data-callback="handleCredentialResponse"
-                     data-auto_prompt="false">
+                     data-auto_prompt="false"
+                     data-context="signin">
                 </div>
                 <div id="g_id_signin" 
                      class="g_id_signin w-full"
@@ -132,7 +133,8 @@
                      data-theme="outline"
                      data-text="sign_in_with"
                      data-shape="rectangular"
-                     data-logo_alignment="left">
+                     data-logo_alignment="left"
+                     data-width="100%">
                 </div>
                 
                 <div class="text-center">
@@ -1355,27 +1357,35 @@ ${content['my-account-description'] || 'Managing your Account settings'}`;
         // Google OAuth Authentication
         function checkAuthStatus() {
             // Set Google OAuth client ID from config
-            if (window.AUTH_CONFIG && window.AUTH_CONFIG.GOOGLE_CLIENT_ID) {
+            if (window.AUTH_CONFIG && window.AUTH_CONFIG.GOOGLE_CLIENT_ID && window.AUTH_CONFIG.GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID') {
                 document.getElementById('g_id_onload').setAttribute('data-client_id', window.AUTH_CONFIG.GOOGLE_CLIENT_ID);
+                
+                // Check if user is already authenticated
+                const user = JSON.parse(localStorage.getItem('adminUser') || 'null');
+                if (user && user.email && user.email.endsWith('@keywordtool.io')) {
+                    showAdminInterface();
+                } else {
+                    showLoginScreen();
+                }
             } else {
                 console.error('Google OAuth client ID not configured. Please update auth-config.js');
-                document.getElementById('loginScreen').innerHTML = `
-                    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 text-center">
-                        <div class="text-red-500 text-6xl mb-4">⚠️</div>
-                        <h1 class="text-2xl font-bold text-gray-900 mb-2">Configuration Required</h1>
-                        <p class="text-gray-600 mb-4">Google OAuth client ID not configured.</p>
-                        <p class="text-sm text-gray-500">Please update admin/auth-config.js with your Google OAuth client ID.</p>
+                showConfigurationError();
+            }
+        }
+
+        function showConfigurationError() {
+            document.getElementById('loginScreen').innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 text-center">
+                    <div class="text-red-500 text-6xl mb-4">⚠️</div>
+                    <h1 class="text-2xl font-bold text-gray-900 mb-2">Configuration Required</h1>
+                    <p class="text-gray-600 mb-4">Google OAuth client ID not configured.</p>
+                    <div class="bg-gray-100 p-4 rounded-lg text-left text-sm font-mono mb-4">
+                        <p class="text-gray-700">Please update <code>admin/auth-config.js</code>:</p>
+                        <p class="text-gray-600 mt-2">const GOOGLE_CLIENT_ID = 'your-actual-client-id.apps.googleusercontent.com';</p>
                     </div>
-                `;
-                return;
-            }
-            
-            const user = JSON.parse(localStorage.getItem('adminUser') || 'null');
-            if (user && user.email && user.email.endsWith('@keywordtool.io')) {
-                showAdminInterface();
-            } else {
-                showLoginScreen();
-            }
+                    <p class="text-sm text-gray-500">Get your client ID from <a href="https://console.cloud.google.com/" target="_blank" class="text-blue-600 hover:underline">Google Cloud Console</a></p>
+                </div>
+            `;
         }
 
         function handleCredentialResponse(response) {
