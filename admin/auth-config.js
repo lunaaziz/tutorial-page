@@ -10,3 +10,8 @@ window.AUTH_CONFIG = {
     GOOGLE_CLIENT_ID,
     MAIN_ADMIN_EMAIL
 };
+
+// Debug logging
+console.log('🔐 Auth Config Loaded:', window.AUTH_CONFIG);
+console.log('🌐 Current domain:', window.location.origin);
+console.log('📱 User agent:', navigator.userAgent);

@@ -1354,18 +1354,25 @@ ${content['my-account-description'] || 'Managing your Account settings'}`;
 
         // Simple Google OAuth Authentication
         function checkAuthStatus() {
+            console.log('🔍 Checking auth status...');
+            console.log('📋 Auth config:', window.AUTH_CONFIG);
+            
             // Set Google OAuth client ID from config
             if (window.AUTH_CONFIG && window.AUTH_CONFIG.GOOGLE_CLIENT_ID) {
+                console.log('✅ Setting Google OAuth client ID:', window.AUTH_CONFIG.GOOGLE_CLIENT_ID);
                 document.getElementById('g_id_onload').setAttribute('data-client_id', window.AUTH_CONFIG.GOOGLE_CLIENT_ID);
                 
                 // Check if user is already authenticated
                 const user = JSON.parse(localStorage.getItem('adminUser') || 'null');
                 if (user && user.email === window.AUTH_CONFIG.MAIN_ADMIN_EMAIL) {
+                    console.log('✅ User already authenticated:', user.email);
                     showAdminInterface();
                 } else {
+                    console.log('🔐 Showing login screen');
                     showLoginScreen();
                 }
             } else {
+                console.error('❌ No auth config found');
                 showConfigurationError();
             }
         }
