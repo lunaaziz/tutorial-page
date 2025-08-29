@@ -32,6 +32,43 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             z-index: 1000;
         }
+        .sidebar-section {
+            margin-top: 24px;
+        }
+        .sidebar-section-header {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            padding: 0 16px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .sidebar-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 20px;
+            color: #33475B;
+            transition: background-color 0.2s;
+        }
+        .sidebar-menu-item:hover {
+            background-color: #f3f4f6;
+        }
+        .sidebar-menu-item.active {
+            color: #6610F2;
+            background-color: #f3e8ff;
+        }
+        .icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -41,18 +78,35 @@
             <button id="saveBtn" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm">
                 💾 Save All
             </button>
-            <button id="addPageBtn" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 text-sm">
-                📄 Add Page
-            </button>
-            <button id="addSidebarBtn" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 text-sm">
-                🧭 Add Menu
-            </button>
             <button id="previewBtn" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm">
                 👁️ Preview
             </button>
             <button id="exitEditBtn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-sm">
                 ❌ Exit Edit
             </button>
+        </div>
+    </div>
+
+    <!-- Top Bar for Adding New Pages -->
+    <div class="bg-white border-b border-gray-200 px-8 py-4">
+        <div class="max-w-[1536px] mx-auto">
+            <div class="flex items-center justify-between">
+                <h1 class="text-xl font-semibold text-gray-900">Page Manager</h1>
+                <div class="flex items-center gap-3">
+                    <button id="previewSiteBtn" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center gap-2">
+                        <span>👁️</span>
+                        Preview Site
+                    </button>
+                    <button id="exportContentBtn" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 flex items-center gap-2">
+                        <span>📤</span>
+                        Export Content
+                    </button>
+                    <button id="addNewPageBtn" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center gap-2">
+                        <span>📄</span>
+                        Add New Page
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -74,102 +128,116 @@
         <div class="grid grid-cols-[240px_1fr] gap-8 mt-8">
             <!-- Sidebar -->
             <aside class="pr-2">
+                <!-- Add Item Button Above Sidebar -->
+                <div class="mb-6">
+                    <button id="addSidebarItemBtn" class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center justify-center gap-2 text-sm">
+                        <span>➕</span>
+                        Add Menu Item
+                    </button>
+                </div>
+
                 <nav>
+                    <!-- Welcome & Tutorials -->
                     <ul>
                         <li class="mb-2">
-                            <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#6610F2] bg-purple-50">
+                            <a href="#" class="sidebar-menu-item active">
                                 <span class="icon">🏠</span> 
                                 <span class="editable" data-field="welcome-text">Welcome</span>
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <a href="#" class="sidebar-menu-item">
                                 <span class="icon">📚</span> 
                                 <span class="editable" data-field="tutorials-text">Tutorials</span>
                             </a>
                         </li>
                     </ul>
                     
-                    <div class="mt-6">
-                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase editable" data-field="basics-category">BASICS</p>
+                    <!-- BASICS Section -->
+                    <div class="sidebar-section">
+                        <p class="sidebar-section-header editable" data-field="basics-category">BASICS</p>
                         <ul id="basics-menu">
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">🔍</span> 
                                 <span class="editable" data-field="search-bar">Search Bar</span>
                             </a></li>
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">🌐</span> 
                                 <span class="editable" data-field="search-engines">Search Engines</span>
                             </a></li>
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">📊</span> 
                                 <span class="editable" data-field="understanding-data">Understanding Data</span>
                             </a></li>
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">⚙️</span> 
                                 <span class="editable" data-field="data-settings">Data Settings</span>
                             </a></li>
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">📋</span> 
                                 <span class="editable" data-field="customise-table">Customise Table View</span>
                             </a></li>
                         </ul>
                     </div>
                     
-                    <div class="mt-6">
-                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase editable" data-field="find-keywords-category">FIND KEYWORDS</p>
+                    <!-- FIND KEYWORDS Section -->
+                    <div class="sidebar-section">
+                        <p class="sidebar-section-header editable" data-field="find-keywords-category">FIND KEYWORDS</p>
                         <ul>
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">🚀</span> 
                                 <span class="editable" data-field="get-started-keywords">Get Started</span>
                             </a></li>
                         </ul>
                     </div>
                     
-                    <div class="mt-6">
-                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase editable" data-field="check-search-category">CHECK SEARCH VOLUME</p>
+                    <!-- CHECK SEARCH VOLUME Section -->
+                    <div class="sidebar-section">
+                        <p class="sidebar-section-header editable" data-field="check-search-category">CHECK SEARCH VOLUME</p>
                         <ul>
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">📈</span> 
                                 <span class="editable" data-field="get-started-search">Get Started</span>
                             </a></li>
                         </ul>
                     </div>
                     
-                    <div class="mt-6">
-                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase editable" data-field="keyword-basket-category">KEYWORD BASKET</p>
+                    <!-- KEYWORD BASKET Section -->
+                    <div class="sidebar-section">
+                        <p class="sidebar-section-header editable" data-field="keyword-basket-category">KEYWORD BASKET</p>
                         <ul>
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">🛒</span> 
                                 <span class="editable" data-field="get-started-basket">Get Started</span>
                             </a></li>
                         </ul>
                     </div>
                     
-                    <div class="mt-6">
-                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase editable" data-field="my-account-category">MY ACCOUNT</p>
+                    <!-- MY ACCOUNT Section -->
+                    <div class="sidebar-section">
+                        <p class="sidebar-section-header editable" data-field="my-account-category">MY ACCOUNT</p>
                         <ul>
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">👤</span> 
                                 <span class="editable" data-field="profile">Profile</span>
                             </a></li>
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">💳</span> 
                                 <span class="editable" data-field="billing">Billing</span>
                             </a></li>
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">📦</span> 
                                 <span class="editable" data-field="subscriptions">Subscriptions</span>
                             </a></li>
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">➕</span> 
                                 <span class="editable" data-field="add-ons">Add-Ons</span>
                             </a></li>
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">👥</span> 
                                 <span class="editable" data-field="user-management">User Management</span>
                             </a></li>
-                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                            <li><a href="#" class="sidebar-menu-item">
                                 <span class="icon">📞</span> 
                                 <span class="editable" data-field="contact-support">Contact Support</span>
                             </a></li>
@@ -215,12 +283,12 @@
         </div>
     </div>
 
-    <!-- Add Page Modal -->
-    <div id="addPageModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <!-- Add New Page Modal -->
+    <div id="addNewPageModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
                 <div class="px-6 py-4 border-b">
-                    <h3 class="text-lg font-medium">Add New Page</h3>
+                    <h3 class="text-lg font-medium">Create New Page</h3>
                 </div>
                 <div class="px-6 py-4">
                     <div class="mb-4">
@@ -241,17 +309,21 @@
                             <option value="MY ACCOUNT">MY ACCOUNT</option>
                         </select>
                     </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea id="newPageDescription" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Brief description of the page"></textarea>
+                    </div>
                 </div>
                 <div class="px-6 py-4 border-t flex justify-end space-x-3">
-                    <button id="cancelAddPageBtn" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
-                    <button id="confirmAddPageBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Create Page</button>
+                    <button id="cancelNewPageBtn" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+                    <button id="confirmNewPageBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Create Page</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Add Sidebar Menu Modal -->
-    <div id="addSidebarModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <!-- Add Sidebar Menu Item Modal -->
+    <div id="addSidebarItemModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
                 <div class="px-6 py-4 border-b">
@@ -275,6 +347,10 @@
                             <option value="KEYWORD BASKET">KEYWORD BASKET</option>
                             <option value="MY ACCOUNT">MY ACCOUNT</option>
                         </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Icon (emoji)</label>
+                        <input type="text" id="newMenuIcon" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="🔗" value="🔗">
                     </div>
                 </div>
                 <div class="px-6 py-4 border-t flex justify-end space-x-3">
@@ -305,15 +381,17 @@
 
                 // Buttons
                 document.getElementById('saveBtn').addEventListener('click', () => this.saveAll());
-                document.getElementById('addPageBtn').addEventListener('click', () => this.showAddPageModal());
-                document.getElementById('addSidebarBtn').addEventListener('click', () => this.showAddSidebarModal());
+                document.getElementById('addNewPageBtn').addEventListener('click', () => this.showAddNewPageModal());
+                document.getElementById('addSidebarItemBtn').addEventListener('click', () => this.showAddSidebarItemModal());
+                document.getElementById('previewSiteBtn').addEventListener('click', () => this.previewSite());
+                document.getElementById('exportContentBtn').addEventListener('click', () => this.exportContent());
                 document.getElementById('previewBtn').addEventListener('click', () => this.previewSite());
                 document.getElementById('exitEditBtn').addEventListener('click', () => this.exitEditMode());
 
                 // Modal buttons
-                document.getElementById('cancelAddPageBtn').addEventListener('click', () => this.hideAddPageModal());
-                document.getElementById('confirmAddPageBtn').addEventListener('click', () => this.createPage());
-                document.getElementById('cancelAddSidebarBtn').addEventListener('click', () => this.hideAddSidebarModal());
+                document.getElementById('cancelNewPageBtn').addEventListener('click', () => this.hideAddNewPageModal());
+                document.getElementById('confirmNewPageBtn').addEventListener('click', () => this.createNewPage());
+                document.getElementById('cancelAddSidebarBtn').addEventListener('click', () => this.hideAddSidebarItemModal());
                 document.getElementById('confirmAddSidebarBtn').addEventListener('click', () => this.createSidebarItem());
             }
 
@@ -355,32 +433,35 @@
                 }
             }
 
-            showAddPageModal() {
-                document.getElementById('addPageModal').classList.remove('hidden');
+            showAddNewPageModal() {
+                document.getElementById('addNewPageModal').classList.remove('hidden');
             }
 
-            hideAddPageModal() {
-                document.getElementById('addPageModal').classList.add('hidden');
+            hideAddNewPageModal() {
+                document.getElementById('addNewPageModal').classList.add('hidden');
                 document.getElementById('newPageTitle').value = '';
                 document.getElementById('newPageSlug').value = '';
                 document.getElementById('newPageCategory').value = 'BASICS';
+                document.getElementById('newPageDescription').value = '';
             }
 
-            showAddSidebarModal() {
-                document.getElementById('addSidebarModal').classList.remove('hidden');
+            showAddSidebarItemModal() {
+                document.getElementById('addSidebarItemModal').classList.remove('hidden');
             }
 
-            hideAddSidebarModal() {
-                document.getElementById('addSidebarModal').classList.add('hidden');
+            hideAddSidebarItemModal() {
+                document.getElementById('addSidebarItemModal').classList.add('hidden');
                 document.getElementById('newMenuTitle').value = '';
                 document.getElementById('newMenuLink').value = '';
                 document.getElementById('newMenuCategory').value = 'BASICS';
+                document.getElementById('newMenuIcon').value = '🔗';
             }
 
-            createPage() {
+            createNewPage() {
                 const title = document.getElementById('newPageTitle').value.trim();
                 const slug = document.getElementById('newPageSlug').value.trim();
                 const category = document.getElementById('newPageCategory').value;
+                const description = document.getElementById('newPageDescription').value.trim();
 
                 if (!title || !slug) {
                     alert('Please enter both title and slug');
@@ -392,7 +473,7 @@
                 
                 const newItem = document.createElement('li');
                 newItem.innerHTML = `
-                    <a href="${slug}.html" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                    <a href="${slug}.html" class="sidebar-menu-item">
                         <span class="icon">📄</span> 
                         <span class="editable" data-field="${slug}-title">${title}</span>
                     </a>
@@ -402,7 +483,7 @@
                 newItem.querySelector('.editable').addEventListener('click', (e) => this.startEditing(e.target));
                 
                 categoryList.appendChild(newItem);
-                this.hideAddPageModal();
+                this.hideAddNewPageModal();
                 
                 alert(`Page "${title}" added to ${category} category!`);
             }
@@ -411,6 +492,7 @@
                 const title = document.getElementById('newMenuTitle').value.trim();
                 const link = document.getElementById('newMenuLink').value.trim();
                 const category = document.getElementById('newMenuCategory').value;
+                const icon = document.getElementById('newMenuIcon').value.trim() || '🔗';
 
                 if (!title || !link) {
                     alert('Please enter both title and link');
@@ -422,8 +504,8 @@
                 
                 const newItem = document.createElement('li');
                 newItem.innerHTML = `
-                    <a href="${link}" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
-                        <span class="icon">🔗</span> 
+                    <a href="${link}" class="sidebar-menu-item">
+                        <span class="icon">${icon}</span> 
                         <span class="editable" data-field="${link.replace('.html', '')}-title">${title}</span>
                     </a>
                 `;
@@ -432,7 +514,7 @@
                 newItem.querySelector('.editable').addEventListener('click', (e) => this.startEditing(e.target));
                 
                 categoryList.appendChild(newItem);
-                this.hideAddSidebarModal();
+                this.hideAddSidebarItemModal();
                 
                 alert(`Menu item "${title}" added to ${category} category!`);
             }
@@ -462,6 +544,28 @@
 
             previewSite() {
                 window.open('../index.html', '_blank');
+            }
+
+            exportContent() {
+                const content = {};
+                document.querySelectorAll('.editable').forEach(el => {
+                    content[el.dataset.field] = el.textContent;
+                });
+                
+                // Create a downloadable JSON file
+                const dataStr = JSON.stringify(content, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'tutorial-content.json';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                alert('Content exported successfully! File: tutorial-content.json');
             }
 
             exitEditMode() {
