@@ -1,24 +1,16 @@
 redirectsOrigin = "config"
+plugins = []
 headers = []
 
 [functions]
 
 [functions."*"]
 
-[[plugins]]
-origin = "default"
-package = "@netlify/plugin-nextjs"
-
-[plugins.inputs]
-
 [build]
-publish = "/Users/lunaaziz/tutorial-page/out"
+publish = "/Users/lunaaziz/tutorial-page"
 publishOrigin = "config"
-commandOrigin = "config"
-command = "npm run build"
 
 [build.environment]
-NODE_VERSION = "20"
 NEXT_PUBLIC_TINA_CLIENT_ID = ""
 TINA_TOKEN = ""
 NEXT_PUBLIC_TINA_BRANCH = "main"

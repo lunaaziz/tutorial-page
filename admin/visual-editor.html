@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Editor - Keyword Tool Tutorials</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .editable { 
+            border: 2px dashed transparent; 
+            padding: 2px; 
+            transition: all 0.2s;
+        }
+        .editable:hover { 
+            border-color: #3b82f6; 
+            background-color: #eff6ff;
+            cursor: pointer;
+        }
+        .editing { 
+            border-color: #3b82f6 !important; 
+            background-color: #eff6ff !important;
+        }
+        .toolbar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Visual Editor Toolbar -->
+    <div class="toolbar">
+        <div class="flex flex-col space-y-2">
+            <button id="saveBtn" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm">
+                💾 Save All
+            </button>
+            <button id="addPageBtn" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 text-sm">
+                📄 Add Page
+            </button>
+            <button id="addSidebarBtn" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 text-sm">
+                🧭 Add Menu
+            </button>
+            <button id="previewBtn" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm">
+                👁️ Preview
+            </button>
+            <button id="exitEditBtn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-sm">
+                ❌ Exit Edit
+            </button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-[1536px] mx-auto px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="../index.html" class="text-lg font-semibold text-gray-900">Logo Tutorials</a>
+                    <a href="../index.html" class="text-sm text-gray-600 hover:text-gray-900">Back to Keyword Tool</a>
+                </div>
+                <div class="text-sm text-gray-500">Visual Editor Mode</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-[1536px] mx-auto px-8">
+        <div class="grid grid-cols-[240px_1fr] gap-8 mt-8">
+            <!-- Sidebar -->
+            <aside class="pr-2">
+                <nav>
+                    <ul>
+                        <li class="mb-2">
+                            <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#6610F2] bg-purple-50">
+                                <span class="icon">🏠</span> 
+                                <span class="editable" data-field="welcome-text">Welcome</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">📚</span> 
+                                <span class="editable" data-field="tutorials-text">Tutorials</span>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-6">
+                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase editable" data-field="basics-category">BASICS</p>
+                        <ul id="basics-menu">
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">🔍</span> 
+                                <span class="editable" data-field="search-bar">Search Bar</span>
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">🌐</span> 
+                                <span class="editable" data-field="search-engines">Search Engines</span>
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">📊</span> 
+                                <span class="editable" data-field="understanding-data">Understanding Data</span>
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">⚙️</span> 
+                                <span class="editable" data-field="data-settings">Data Settings</span>
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">📋</span> 
+                                <span class="editable" data-field="customise-table">Customise Table View</span>
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase editable" data-field="find-keywords-category">FIND KEYWORDS</p>
+                        <ul>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">🚀</span> 
+                                <span class="editable" data-field="get-started-keywords">Get Started</span>
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase editable" data-field="check-search-category">CHECK SEARCH VOLUME</p>
+                        <ul>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">📈</span> 
+                                <span class="editable" data-field="get-started-search">Get Started</span>
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase editable" data-field="keyword-basket-category">KEYWORD BASKET</p>
+                        <ul>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">🛒</span> 
+                                <span class="editable" data-field="get-started-basket">Get Started</span>
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <p class="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase editable" data-field="my-account-category">MY ACCOUNT</p>
+                        <ul>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">👤</span> 
+                                <span class="editable" data-field="profile">Profile</span>
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">💳</span> 
+                                <span class="editable" data-field="billing">Billing</span>
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">📦</span> 
+                                <span class="editable" data-field="subscriptions">Subscriptions</span>
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">➕</span> 
+                                <span class="editable" data-field="add-ons">Add-Ons</span>
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">👥</span> 
+                                <span class="editable" data-field="user-management">User Management</span>
+                            </a></li>
+                            <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                                <span class="icon">📞</span> 
+                                <span class="editable" data-field="contact-support">Contact Support</span>
+                            </a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+            
+            <!-- Main Content Area -->
+            <main class="relative bg-white rounded-xl p-8 overflow-hidden">
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="icon-home">🏠</i>
+                        <h2 class="text-3xl font-semibold m-0 editable" data-field="main-title">Welcome</h2>
+                    </div>
+                    <p class="mb-2 editable" data-field="welcome-message">Welcome to the Keyword Tool Tutorials. Here you can find all the interactive step-by-step walkthrough on how to use our amazing features!</p>
+                    <p class="mb-8 editable" data-field="get-started-message">To get started, choose the main categories you are looking for below, or select from the sidebar.</p>
+                    <h3 class="text-2xl font-semibold mt-12 mb-6 editable" data-field="jump-right-in">Jump right in</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2 editable" data-field="basics-title">Basics</h4>
+                            <p class="text-gray-500 m-0 text-sm editable" data-field="basics-description">Learn the basics of Keyword Tool</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2 editable" data-field="find-keywords-title">Find Keywords</h4>
+                            <p class="text-gray-500 m-0 text-sm editable" data-field="find-keywords-description">Get advance insights</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2 editable" data-field="check-search-title">Check Search Volume</h4>
+                            <p class="text-gray-500 m-0 text-sm editable" data-field="check-search-description">Get search volume data for 700 keywords of your choice</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2 editable" data-field="keyword-basket-title">Keyword Basket</h4>
+                            <p class="text-gray-500 m-0 text-sm editable" data-field="keyword-basket-description">Lorem ipsum</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow transition cursor-pointer">
+                            <h4 class="text-lg font-semibold mb-2 editable" data-field="my-account-title">My Account</h4>
+                            <p class="text-gray-500 m-0 text-sm editable" data-field="my-account-description">Managing your Account settings</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Page Modal -->
+    <div id="addPageModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                <div class="px-6 py-4 border-b">
+                    <h3 class="text-lg font-medium">Add New Page</h3>
+                </div>
+                <div class="px-6 py-4">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Page Title</label>
+                        <input type="text" id="newPageTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="New Page Title">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Page Slug</label>
+                        <input type="text" id="newPageSlug" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="new-page">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                        <select id="newPageCategory" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="BASICS">BASICS</option>
+                            <option value="FIND KEYWORDS">FIND KEYWORDS</option>
+                            <option value="CHECK SEARCH VOLUME">CHECK SEARCH VOLUME</option>
+                            <option value="KEYWORD BASKET">KEYWORD BASKET</option>
+                            <option value="MY ACCOUNT">MY ACCOUNT</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="px-6 py-4 border-t flex justify-end space-x-3">
+                    <button id="cancelAddPageBtn" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+                    <button id="confirmAddPageBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Create Page</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Sidebar Menu Modal -->
+    <div id="addSidebarModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                <div class="px-6 py-4 border-b">
+                    <h3 class="text-lg font-medium">Add Sidebar Menu Item</h3>
+                </div>
+                <div class="px-6 py-4">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Menu Title</label>
+                        <input type="text" id="newMenuTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="New Menu Item">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Link URL</label>
+                        <input type="text" id="newMenuLink" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="page.html">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                        <select id="newMenuCategory" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="BASICS">BASICS</option>
+                            <option value="FIND KEYWORDS">FIND KEYWORDS</option>
+                            <option value="CHECK SEARCH VOLUME">CHECK SEARCH VOLUME</option>
+                            <option value="KEYWORD BASKET">KEYWORD BASKET</option>
+                            <option value="MY ACCOUNT">MY ACCOUNT</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="px-6 py-4 border-t flex justify-end space-x-3">
+                    <button id="cancelAddSidebarBtn" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+                    <button id="confirmAddSidebarBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Add Menu Item</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class VisualEditor {
+            constructor() {
+                this.currentEditing = null;
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.loadContent();
+            }
+
+            setupEventListeners() {
+                // Editable elements
+                document.querySelectorAll('.editable').forEach(el => {
+                    el.addEventListener('click', (e) => this.startEditing(e.target));
+                });
+
+                // Buttons
+                document.getElementById('saveBtn').addEventListener('click', () => this.saveAll());
+                document.getElementById('addPageBtn').addEventListener('click', () => this.showAddPageModal());
+                document.getElementById('addSidebarBtn').addEventListener('click', () => this.showAddSidebarModal());
+                document.getElementById('previewBtn').addEventListener('click', () => this.previewSite());
+                document.getElementById('exitEditBtn').addEventListener('click', () => this.exitEditMode());
+
+                // Modal buttons
+                document.getElementById('cancelAddPageBtn').addEventListener('click', () => this.hideAddPageModal());
+                document.getElementById('confirmAddPageBtn').addEventListener('click', () => this.createPage());
+                document.getElementById('cancelAddSidebarBtn').addEventListener('click', () => this.hideAddSidebarModal());
+                document.getElementById('confirmAddSidebarBtn').addEventListener('click', () => this.createSidebarItem());
+            }
+
+            startEditing(element) {
+                if (this.currentEditing) {
+                    this.finishEditing();
+                }
+
+                this.currentEditing = element;
+                element.classList.add('editing');
+                
+                const currentText = element.textContent;
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = currentText;
+                input.className = 'w-full px-2 py-1 border border-blue-500 rounded focus:outline-none focus:ring-2 focus:ring-blue-500';
+                
+                element.textContent = '';
+                element.appendChild(input);
+                input.focus();
+                input.select();
+
+                input.addEventListener('blur', () => this.finishEditing());
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.finishEditing();
+                    }
+                });
+            }
+
+            finishEditing() {
+                if (!this.currentEditing) return;
+
+                const input = this.currentEditing.querySelector('input');
+                if (input) {
+                    this.currentEditing.textContent = input.value;
+                    this.currentEditing.classList.remove('editing');
+                    this.currentEditing = null;
+                }
+            }
+
+            showAddPageModal() {
+                document.getElementById('addPageModal').classList.remove('hidden');
+            }
+
+            hideAddPageModal() {
+                document.getElementById('addPageModal').classList.add('hidden');
+                document.getElementById('newPageTitle').value = '';
+                document.getElementById('newPageSlug').value = '';
+                document.getElementById('newPageCategory').value = 'BASICS';
+            }
+
+            showAddSidebarModal() {
+                document.getElementById('addSidebarModal').classList.remove('hidden');
+            }
+
+            hideAddSidebarModal() {
+                document.getElementById('addSidebarModal').classList.add('hidden');
+                document.getElementById('newMenuTitle').value = '';
+                document.getElementById('newMenuLink').value = '';
+                document.getElementById('newMenuCategory').value = 'BASICS';
+            }
+
+            createPage() {
+                const title = document.getElementById('newPageTitle').value.trim();
+                const slug = document.getElementById('newPageSlug').value.trim();
+                const category = document.getElementById('newPageCategory').value;
+
+                if (!title || !slug) {
+                    alert('Please enter both title and slug');
+                    return;
+                }
+
+                // Add to appropriate category
+                const categoryList = document.querySelector(`[data-field="${category.toLowerCase().replace(' ', '-')}-category"]`).closest('div').querySelector('ul');
+                
+                const newItem = document.createElement('li');
+                newItem.innerHTML = `
+                    <a href="${slug}.html" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                        <span class="icon">📄</span> 
+                        <span class="editable" data-field="${slug}-title">${title}</span>
+                    </a>
+                `;
+
+                // Add click listener to new editable element
+                newItem.querySelector('.editable').addEventListener('click', (e) => this.startEditing(e.target));
+                
+                categoryList.appendChild(newItem);
+                this.hideAddPageModal();
+                
+                alert(`Page "${title}" added to ${category} category!`);
+            }
+
+            createSidebarItem() {
+                const title = document.getElementById('newMenuTitle').value.trim();
+                const link = document.getElementById('newMenuLink').value.trim();
+                const category = document.getElementById('newMenuCategory').value;
+
+                if (!title || !link) {
+                    alert('Please enter both title and link');
+                    return;
+                }
+
+                // Add to appropriate category
+                const categoryList = document.querySelector(`[data-field="${category.toLowerCase().replace(' ', '-')}-category"]`).closest('div').querySelector('ul');
+                
+                const newItem = document.createElement('li');
+                newItem.innerHTML = `
+                    <a href="${link}" class="flex items-center gap-3 px-4 py-2 rounded-md font-medium text-sm leading-5 text-[#33475B] hover:bg-gray-100">
+                        <span class="icon">🔗</span> 
+                        <span class="editable" data-field="${link.replace('.html', '')}-title">${title}</span>
+                    </a>
+                `;
+
+                // Add click listener to new editable element
+                newItem.querySelector('.editable').addEventListener('click', (e) => this.startEditing(e.target));
+                
+                categoryList.appendChild(newItem);
+                this.hideAddSidebarModal();
+                
+                alert(`Menu item "${title}" added to ${category} category!`);
+            }
+
+            saveAll() {
+                const content = {};
+                document.querySelectorAll('.editable').forEach(el => {
+                    content[el.dataset.field] = el.textContent;
+                });
+                
+                localStorage.setItem('visualEditor_content', JSON.stringify(content));
+                alert('All changes saved!');
+            }
+
+            loadContent() {
+                const saved = localStorage.getItem('visualEditor_content');
+                if (saved) {
+                    const content = JSON.parse(saved);
+                    Object.keys(content).forEach(field => {
+                        const element = document.querySelector(`[data-field="${field}"]`);
+                        if (element) {
+                            element.textContent = content[field];
+                        }
+                    });
+                }
+            }
+
+            previewSite() {
+                window.open('../index.html', '_blank');
+            }
+
+            exitEditMode() {
+                if (confirm('Are you sure you want to exit edit mode? All unsaved changes will be lost.')) {
+                    window.location.href = 'index.html';
+                }
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new VisualEditor();
+        });
+    </script>
+</body>
+</html>
