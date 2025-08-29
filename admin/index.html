@@ -153,12 +153,10 @@
                 <div class="flex items-center gap-4">
                     <h1 class="text-xl font-semibold text-gray-900">📚 Content Manager</h1>
                     <span class="text-sm text-gray-500">GitBook-style CMS</span>
-                    <div id="userInfo" class="hidden ml-4 flex items-center gap-2 text-sm text-gray-600">
+                    <div id="userInfo" class="ml-4 flex items-center gap-2 text-sm text-gray-600">
                         <span>👤</span>
-                        <span id="userName">User</span>
-                        <span>(</span>
-                        <span id="userEmail">email@keywordtool.io</span>
-                        <span>)</span>
+                        <span id="userName">luna@keywordtool.io</span>
+                        <span class="text-yellow-600">(Bypass Auth)</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -1354,6 +1352,16 @@ ${content['my-account-description'] || 'Managing your Account settings'}`;
 
         // Simple Google OAuth Authentication
         function checkAuthStatus() {
+            // Check if using bypass authentication
+            if (window.AUTH_CONFIG && window.AUTH_CONFIG.GOOGLE_CLIENT_ID === 'BYPASS_AUTH_FOR_NOW') {
+                // Bypass authentication - show admin interface directly
+                showAdminInterface();
+                // Initialize the editor
+                const editor = new VisualEditor();
+                setTimeout(() => editor.updateContentCounters(), 100);
+                return;
+            }
+            
             // Set Google OAuth client ID from config
             if (window.AUTH_CONFIG && window.AUTH_CONFIG.GOOGLE_CLIENT_ID && window.AUTH_CONFIG.GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID_HERE') {
                 document.getElementById('g_id_onload').setAttribute('data-client_id', window.AUTH_CONFIG.GOOGLE_CLIENT_ID);
